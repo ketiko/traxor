@@ -2,6 +2,7 @@ require 'active_support/configurable'
 require 'logger'
 require 'traxor/metric'
 require 'traxor/rails' if defined?(Rails)
+require 'traxor/sidekiq' if defined?(Sidekiq)
 require 'traxor/version'
 
 module Traxor
