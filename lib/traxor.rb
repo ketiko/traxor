@@ -1,4 +1,5 @@
 require 'active_support/configurable'
+require 'active_support/inflector/inflections'
 require 'logger'
 require 'traxor/metric'
 require 'traxor/rails' if defined?(Rails)
@@ -15,5 +16,9 @@ module Traxor
 
   def self.configure
     yield config
+  end
+
+  def self.normalize_name(value)
+    value.to_s.gsub(/::/, '.').underscore
   end
 end

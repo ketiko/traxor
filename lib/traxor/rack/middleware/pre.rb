@@ -28,8 +28,8 @@ module Traxor
             tags = {}
             if controller
               method = env['REQUEST_METHOD'].to_s
-              tags = { controller: controller.class, action: controller.action_name, method: method }
-              controller_path = "#{controller.class.to_s.gsub(/::/, '.').underscore}.#{controller.action_name.underscore}.#{method.downcase}"
+              tags = { controller: Traxor.normalize_name(controller.class), action: Traxor.normalize_name(controller.action_name), method: Traxor.normalize_name(method) }
+              controller_path = tags.values.join('.')
 
               Metric.measure "rack.request.duration.middleware.#{controller_path}", "#{middleware_time.round(2)}ms", tags
               Metric.measure "rack.request.duration.#{controller_path}", "#{total_time.round(2)}ms", tags
