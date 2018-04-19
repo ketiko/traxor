@@ -1,4 +1,4 @@
-# Traxor
+# Traxor [![CircleCI](https://circleci.com/gh/ketiko/traxor.svg?style=svg&circle-token=fd1e0d401eda8de60d31ca3dbb5fb066a71a9b9f)](https://circleci.com/gh/ketiko/traxor) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7353369ceb634f43a0a6dd40d3c32a41)](https://www.codacy.com/app/ketiko/traxor?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ketiko/traxor&amp;utm_campaign=Badge_Grade)
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/traxor`. To experiment with that code, run `bin/console` for an interactive prompt.
 
