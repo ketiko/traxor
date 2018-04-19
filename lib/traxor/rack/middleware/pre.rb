@@ -33,6 +33,8 @@ module Traxor
 
               Metric.measure "rack.request.duration.middleware.#{controller_path}", "#{middleware_time.round(2)}ms", tags
               Metric.measure "rack.request.duration.#{controller_path}", "#{total_time.round(2)}ms", tags
+              Metric.count 'rack.request.count', 1, tags
+              Metric.count "rack.request.count.#{controller_path}", 1, tags
             end
 
             Metric.measure 'rack.request.duration.middleware', "#{middleware_time.round(2)}ms", tags
