@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.5.1-node
+        environment:
+          RAILS_ENV: test
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Bundle Install
+          command: bundle install --deployment --jobs 4 --retry 3
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: RSpec
+          command: |
+            mkdir results
+            bundle exec rspec spec --order random --profile --format documentation --format RspecJunitFormatter --out results/rspec.xml
+
+      - store_test_results:
+          path: results
+      - store_artifacts:
+          path: results
+      - store_artifacts:
+          path: coverage
