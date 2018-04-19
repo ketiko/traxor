@@ -16,14 +16,14 @@ module Traxor
     Metric.count 'rails.action_controller.count', 1, tags
     Metric.count "rails.action_controller.count.#{controller_path}", 1, tags
 
-    Metric.measure 'rails.action_controller.duration.ruby', "#{ruby_runtime.to_f.round(2)}ms", tags
-    Metric.measure "rails.action_controller.duration.ruby.#{controller_path}", "#{ruby_runtime.to_f.round(2)}ms", tags
+    Metric.measure 'rails.action_controller.ruby.duration', "#{ruby_runtime.to_f.round(2)}ms", tags
+    Metric.measure "rails.action_controller.ruby.duration.#{controller_path}", "#{ruby_runtime.to_f.round(2)}ms", tags
 
-    Metric.measure 'rails.action_controller.duration.db', "#{db_runtime.to_f.round(2)}ms", tags
-    Metric.measure "rails.action_controller.duration.db.#{controller_path}", "#{db_runtime.to_f.round(2)}ms", tags
+    Metric.measure 'rails.action_controller.db.duration', "#{db_runtime.to_f.round(2)}ms", tags
+    Metric.measure "rails.action_controller.db.duration.#{controller_path}", "#{db_runtime.to_f.round(2)}ms", tags
 
-    Metric.measure 'rails.action_controller.duration.view', "#{view_runtime.to_f.round(2)}ms", tags
-    Metric.measure "rails.action_controller.duration.view.#{controller_path}", "#{view_runtime.to_f.round(2)}ms", tags
+    Metric.measure 'rails.action_controller.view.duration', "#{view_runtime.to_f.round(2)}ms", tags
+    Metric.measure "rails.action_controller.view.duration.#{controller_path}", "#{view_runtime.to_f.round(2)}ms", tags
 
     if exception.present?
       Metric.count 'rails.action_controller.exception.count', 1, tags

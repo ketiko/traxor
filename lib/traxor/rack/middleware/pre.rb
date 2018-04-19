@@ -31,13 +31,13 @@ module Traxor
               tags = { controller: Traxor.normalize_name(controller.class), action: Traxor.normalize_name(controller.action_name), method: Traxor.normalize_name(method) }
               controller_path = tags.values.join('.')
 
-              Metric.measure "rack.request.duration.middleware.#{controller_path}", "#{middleware_time.round(2)}ms", tags
+              Metric.measure "rack.request.middleware.duration.#{controller_path}", "#{middleware_time.round(2)}ms", tags
               Metric.measure "rack.request.duration.#{controller_path}", "#{total_time.round(2)}ms", tags
               Metric.count 'rack.request.count', 1, tags
               Metric.count "rack.request.count.#{controller_path}", 1, tags
             end
 
-            Metric.measure 'rack.request.duration.middleware', "#{middleware_time.round(2)}ms", tags
+            Metric.measure 'rack.request.middleware.duration', "#{middleware_time.round(2)}ms", tags
             Metric.measure 'rack.request.duration', "#{total_time.round(2)}ms", tags
           end
 
