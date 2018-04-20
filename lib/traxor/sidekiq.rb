@@ -10,8 +10,8 @@ module Traxor
         end
         Metric.measure 'sidekiq.worker.duration', "#{time.round(2)}ms", tags
         Metric.measure "sidekiq.worker.duration.#{tags[:worker]}", "#{time.round(2)}ms", tags
-        Metric.measure 'sidekiq.worker.count', 1, tags
-        Metric.measure "sidekiq.worker.count.#{tags[:worker]}", 1, tags
+        Metric.count 'sidekiq.worker.count', 1, tags
+        Metric.count "sidekiq.worker.count.#{tags[:worker]}", 1, tags
       rescue StandardError
         Metric.count 'sidekiq.worker.exception.count', 1, tags
         Metric.count "sidekiq.worker.exception.count.#{tags[:worker]}", 1, tags
