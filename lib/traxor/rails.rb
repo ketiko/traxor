@@ -19,6 +19,8 @@ module Traxor
     end
 
     config.before_configuration do
+      require 'traxor/faraday' if defined?(Faraday)
+
       if defined?(Sidekiq)
         ::Sidekiq.server_middleware do |chain|
           require 'traxor/sidekiq'
