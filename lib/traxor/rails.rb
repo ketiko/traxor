@@ -5,11 +5,6 @@ module Traxor
         config.logger = ::Rails.logger
       end
 
-      require 'traxor/rack/middleware/pre'
-      require 'traxor/rack/middleware/post'
-      app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
-      app.config.middleware.use Traxor::Rack::Middleware::Post
-
       ActiveSupport.on_load :action_controller do
         require 'traxor/rails/action_controller'
       end
