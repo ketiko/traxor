@@ -1,6 +1,7 @@
 require 'active_support/configurable'
 require 'active_support/inflector/inflections'
 require 'logger'
+require 'traxor/faraday' if defined?(Faraday)
 require 'traxor/metric'
 require 'traxor/rails' if defined?(Rails)
 require 'traxor/sidekiq' if defined?(Sidekiq)
