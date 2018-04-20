@@ -16,6 +16,9 @@ module Traxor
       ActiveSupport.on_load :active_record do
         require 'traxor/rails/active_record'
       end
+      ActiveSupport.on_load :action_mailer do
+        require 'traxor/rails/action_mailer'
+      end
     end
 
     config.before_configuration do
