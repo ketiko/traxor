@@ -16,9 +16,6 @@ module Traxor
     Metric.count 'rails.action_controller.count', 1, tags
     Metric.count "rails.action_controller.count.#{controller_path}", 1, tags
 
-    Metric.measure 'rails.action_controller.total.duration', "#{duration.to_f.round(2)}ms", tags
-    Metric.measure "rails.action_controller.total.duration.#{controller_path}", "#{duration.to_f.round(2)}ms", tags
-
     Metric.measure 'rails.action_controller.ruby.duration', "#{ruby_runtime.to_f.round(2)}ms", tags
     Metric.measure "rails.action_controller.ruby.duration.#{controller_path}", "#{ruby_runtime.to_f.round(2)}ms", tags
 
