@@ -11,8 +11,7 @@ module Traxor
           queue_duration = nil
           request_start_ms = env['HTTP_X_REQUEST_START']
           if request_start_ms
-            request_start = Time.at(request_start_ms.to_f / 1_000)
-            queue_duration = request_start.to_f - env['traxor.rack.middleware.pre_middleware_start'].to_f
+            queue_duration = request_start_ms.to_f - env['traxor.rack.middleware.pre_middleware_start'].to_f
           end
           status, headers, body = @app.call(env)
           env['traxor.rack.middleware.post_middleware_end'] = Time.now.to_f
