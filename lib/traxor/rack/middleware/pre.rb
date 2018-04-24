@@ -2,6 +2,12 @@ module Traxor
   module Rack
     module Middleware
       class Pre
+        # any timestamps before this are thrown out and the parser
+        # will try again with a larger unit (2000/1/1 UTC)
+        EARLIEST_ACCEPTABLE_TIME = Time.at(946684800)
+
+        DIVISORS = [1_000_000, 1_000, 1]
+
         def initialize(app)
           @app = app
         end
@@ -9,9 +15,9 @@ module Traxor
         def call(env)
           env['traxor.rack.middleware.pre_middleware_start'] = Time.now.to_f
           queue_duration = nil
-          request_start_ms = env['HTTP_X_REQUEST_START']
-          if request_start_ms
-            queue_duration = (env['traxor.rack.middleware.pre_middleware_start'].to_f * 1_000) - request_start_ms.to_f
+          request_start = env['HTTP_X_REQUEST_START']
+          if request_start
+            queue_duration = (env['traxor.rack.middleware.pre_middleware_start'].to_f - parse_request_queue(request_start).to_f) * 1_000
           end
           status, headers, body = @app.call(env)
           env['traxor.rack.middleware.post_middleware_end'] = Time.now.to_f
@@ -51,6 +57,21 @@ module Traxor
           Metric.count 'rack.request.count', 1, tags
 
           [status, headers, body]
+        end
+
+        def parse_request_queue(string)
+          DIVISORS.each do |divisor|
+            begin
+              t = Time.at(string.to_f / divisor)
+              return t if t > EARLIEST_ACCEPTABLE_TIME
+            rescue RangeError
+              # On Ruby versions built with a 32-bit time_t, attempting to
+              # instantiate a Time object in the far future raises a RangeError,
+              # in which case we know we've chosen the wrong divisor.
+            end
+          end
+
+          nil
         end
       end
     end
