@@ -63,9 +63,10 @@ module Traxor
         end
 
         def parse_request_queue(string)
+          value = string.to_s.gsub(/t=/, '')
           DIVISORS.each do |divisor|
             begin
-              t = Time.at(string.to_f / divisor)
+              t = Time.at(value.to_f / divisor)
               return t if t > EARLIEST_ACCEPTABLE_TIME
             rescue RangeError
               # On Ruby versions built with a 32-bit time_t, attempting to
