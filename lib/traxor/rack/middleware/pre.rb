@@ -18,8 +18,6 @@ module Traxor
           request_start = env['HTTP_X_REQUEST_START']
           if request_start
             parsed = parse_request_queue(request_start)
-            delta = env['traxor.rack.middleware.pre_middleware_start'].to_f - parsed.to_f
-            Traxor.config.logger.info "PARSED queue X-REQUEST-START #{parsed.to_s}, in sec: #{parsed.to_i}, Now: #{Time.now.to_i}, delta: #{delta}"
             queue_duration = (env['traxor.rack.middleware.pre_middleware_start'].to_f - parsed.to_f) * 1_000
           end
           status, headers, body = @app.call(env)
