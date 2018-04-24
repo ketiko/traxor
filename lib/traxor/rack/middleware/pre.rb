@@ -8,6 +8,12 @@ module Traxor
 
         def call(env)
           env['traxor.rack.middleware.pre_middleware_start'] = Time.now.to_f
+          queue_duration = nil
+          request_start_ms = env['HTTP_X_REQUEST_START']
+          if request_start_ms
+            request_start = Time.at(request_start_ms.to_f / 1_000)
+            queue_duration = request_start.to_f - env['traxor.rack.middleware.pre_middleware_start'].to_f
+          end
           status, headers, body = @app.call(env)
           env['traxor.rack.middleware.post_middleware_end'] = Time.now.to_f
 
@@ -34,6 +40,7 @@ module Traxor
 
               Metric.measure 'rack.request.middleware.duration', "#{middleware_time.round(2)}ms", tags
               Metric.measure "rack.request.middleware.duration.#{controller_path}", "#{middleware_time.round(2)}ms", tags
+              Metric.measure "rack.request.queue.duration.#{controller_path}", "#{queue_duration.round(2)}ms", tags if queue_duration
               Metric.measure "rack.request.duration.#{controller_path}", "#{total_time.round(2)}ms", tags
               Metric.count "rack.request.count.#{controller_path}", 1, tags
             end
@@ -41,6 +48,7 @@ module Traxor
             Metric.measure 'rack.request.duration', "#{total_time.round(2)}ms", tags
           end
 
+          Metric.measure 'rack.request.queue.duration', "#{queue_duration.round(2)}ms", tags if queue_duration
           Metric.count 'rack.request.count', 1, tags
 
           [status, headers, body]
