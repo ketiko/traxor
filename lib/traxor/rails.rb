@@ -1,9 +1,16 @@
 module Traxor
   class Rails < ::Rails::Engine
     initializer 'traxor.setup' do |app|
-      # Traxor.configure do |config|
-      #   config.logger = ::Rails.logger
-      # end
+      Traxor.configure do |config|
+        if ::Rails.env.development? || ::Rails.env.test?
+          orig = Traxor.config.logger
+          config.logger = Logger.new(::Rails.root.join('log', 'traxor.log')).tap do |logger|
+            logger.progname = orig.progname
+            logger.formatter = orig.formatter
+            logger.level = orig.level
+          end
+        end
+      end
 
       require 'traxor/rack'
       app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
