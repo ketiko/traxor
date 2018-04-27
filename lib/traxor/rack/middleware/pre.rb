@@ -39,18 +39,18 @@ module Traxor
             middleware_time = (pre_time + post_time) * 1_000
             total_time = (Thread.current[POST_MIDDLEWARE_END].to_f - Thread.current[PRE_MIDDLEWARE_START].to_f) * 1_000
 
-            Metric.measure 'rack.request.middleware.duration', "#{middleware_time.round(2)}ms"
-            Metric.measure 'rack.request.duration', "#{total_time.round(2)}ms"
+            Metric.measure 'rack.request.middleware.duration'.freeze, "#{middleware_time.round(2)}ms"
+            Metric.measure 'rack.request.duration'.freeze, "#{total_time.round(2)}ms"
           end
 
-          Metric.measure 'rack.request.queue.duration', "#{queue_duration.round(2)}ms" if queue_duration
-          Metric.count 'rack.request.count', 1
+          Metric.measure 'rack.request.queue.duration'.freeze, "#{queue_duration.round(2)}ms" if queue_duration
+          Metric.count 'rack.request.count'.freeze, 1
 
           [status, headers, body]
         end
 
         def parse_request_queue(string)
-          value = string.to_s.gsub(/t=/, '')
+          value = string.to_s.sub(/t=/, ''.freeze)
           DIVISORS.each do |divisor|
             begin
               time = Time.at(value.to_f / divisor).utc

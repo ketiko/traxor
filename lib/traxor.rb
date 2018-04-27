@@ -1,41 +1,24 @@
-require 'active_support/configurable'
-require 'active_support/inflector/inflections'
 require 'active_support/core_ext/object/blank'
+require 'active_support/inflector/inflections'
 require 'logger'
 require 'traxor/faraday' if defined?(Faraday)
 require 'traxor/metric'
 require 'traxor/rack' if defined?(Rack)
 require 'traxor/rails' if defined?(Rails::Engine)
 require 'traxor/sidekiq' if defined?(Sidekiq)
+require 'traxor/tags'
 require 'traxor/version'
 
 module Traxor
-  include ActiveSupport::Configurable
+  def self.logger
+    defined?(@logger) ? @logger : initialize_logger
+  end
 
-  CONTROLLER_TAGS = 'traxor.action_controller.tags'.freeze
-  SIDEKIQ_TAGS = 'traxor.sidekiq.tags'.freeze
-
-  config_accessor :logger do
-    Logger.new(STDOUT, progname: 'traxor', level: Logger::INFO).tap do |logger|
-      logger.formatter = proc do |severity, _time, progname, msg|
-        "[#{progname}] #{severity} : #{msg}\n"
-      end
+  def self.initialize_logger(log_target = STDOUT)
+    @logger = Logger.new(log_target, level: Logger::INFO, progname: name.downcase)
+    @logger.formatter = proc do |severity, _time, progname, msg|
+      "[#{progname}] #{severity} : #{msg}\n"
     end
-  end
-
-  def self.configure
-    yield config
-  end
-
-  def self.controller_tags
-    Thread.current[CONTROLLER_TAGS] || {}
-  end
-
-  def self.sidekiq_tags
-    Thread.current[SIDEKIQ_TAGS] || {}
-  end
-
-  def self.current_tags
-    controller_tags.merge(sidekiq_tags)
+    @logger
   end
 end
