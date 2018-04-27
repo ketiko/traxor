@@ -1,3 +1,5 @@
+require 'traxor/rack'
+
 module Traxor
   class Rails < ::Rails::Engine
     initializer 'traxor.setup' do |app|
@@ -12,7 +14,6 @@ module Traxor
         end
       end
 
-      require 'traxor/rack'
       app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
       app.config.middleware.use Traxor::Rack::Middleware::Post
 
