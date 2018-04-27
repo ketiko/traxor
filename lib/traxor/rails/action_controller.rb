@@ -1,11 +1,11 @@
 module Traxor
   ActiveSupport::Notifications.subscribe 'start_processing.action_controller'.freeze do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
-    Traxor::Tags.controller.merge(
+    Traxor::Tags.controller = {
       controller_name: event.payload[:controller],
       controller_action: event.payload[:action],
       controller_method: event.payload[:method]
-    )
+    }
   end
 
   ActiveSupport::Notifications.subscribe 'process_action.action_controller'.freeze do |*args|
@@ -21,6 +21,6 @@ module Traxor
     Metric.measure 'rails.action_controller.ruby.duration'.freeze, "#{ruby_runtime.to_f.round(2)}ms"
     Metric.measure 'rails.action_controller.db.duration'.freeze, "#{db_runtime.to_f.round(2)}ms"
     Metric.measure 'rails.action_controller.view.duration'.freeze, "#{view_runtime.to_f.round(2)}ms"
-    Metric.count 'rails.action_controller.exception.count'.freeze, 1 if exception.present?
+    Metric.count 'rails.action_controller.exception.count'.freeze, 1 if exception
   end
 end

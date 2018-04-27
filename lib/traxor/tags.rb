@@ -1,18 +1,11 @@
+require 'active_support/core_ext/module/attribute_accessors_per_thread'
+
 module Traxor
   module Tags
-    CONTROLLER_KEY = 'traxor.action_controller.tags'.freeze
-    SIDEKIQ_KEY = 'traxor.sidekiq.tags'.freeze
+    thread_mattr_accessor :controller, :sidekiq
 
     def self.all
-      controller.merge(sidekiq)
-    end
-
-    def self.controller
-      Thread.current[CONTROLLER_KEY] || {}
-    end
-
-    def self.sidekiq
-      Thread.current[SIDEKIQ_KEY] || {}
+      (controller || {}).merge(sidekiq || {})
     end
   end
 end

@@ -1,15 +1,17 @@
+require 'active_support/inflector/inflections'
+
 module Traxor
   module Metric
     def self.count(name, value, tags = {})
-      Traxor.logger.info(normalize_name("count##{name}=#{value} #{tag_string(tags)}"))
+      log("count##{name}=#{value} #{tag_string(tags)}")
     end
 
     def self.measure(name, value, tags = {})
-      Traxor.logger.info(normalize_name("measure##{name}=#{value} #{tag_string(tags)}"))
+      log("measure##{name}=#{value} #{tag_string(tags)}")
     end
 
     def self.sample(name, value, tags = {})
-      Traxor.logger.info(normalize_name("sample##{name}=#{value} #{tag_string(tags)}"))
+      log("sample##{name}=#{value} #{tag_string(tags)}")
     end
 
     def self.tag_string(tags)
@@ -18,8 +20,12 @@ module Traxor
       end.join(' '.freeze)
     end
 
-    def self.normalize_name(value)
+    def self.normalize_values(value)
       value.to_s.gsub(/::/, '.'.freeze).underscore.strip
+    end
+
+    def self.log(string)
+      Traxor.logger.info(normalize_values(string))
     end
   end
 end

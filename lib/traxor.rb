@@ -1,5 +1,3 @@
-require 'active_support/core_ext/object/blank'
-require 'active_support/inflector/inflections'
 require 'logger'
 require 'traxor/faraday' if defined?(Faraday)
 require 'traxor/metric'
@@ -15,7 +13,7 @@ module Traxor
   end
 
   def self.initialize_logger(log_target = STDOUT)
-    @logger = Logger.new(log_target, level: Logger::INFO, progname: name.downcase)
+    @logger = Logger.new(log_target, level: Logger::INFO, progname: name)
     @logger.formatter = proc do |severity, _time, progname, msg|
       "[#{progname}] #{severity} : #{msg}\n"
     end

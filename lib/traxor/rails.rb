@@ -25,8 +25,8 @@ module Traxor
       require 'traxor/faraday' if defined?(Faraday)
 
       if defined?(Sidekiq)
+        require 'traxor/sidekiq'
         ::Sidekiq.server_middleware do |chain|
-          require 'traxor/sidekiq'
           chain.add Traxor::Sidekiq
         end
       end

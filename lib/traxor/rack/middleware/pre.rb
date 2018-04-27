@@ -33,7 +33,7 @@ module Traxor
             POST_MIDDLEWARE_END
           ]
 
-          if times.all? { |time| Thread.current[time].present? }
+          if times.all? { |time| Thread.current[time] }
             pre_time = (Thread.current[PRE_MIDDLEWARE_END].to_f - Thread.current[PRE_MIDDLEWARE_START].to_f)
             post_time = (Thread.current[POST_MIDDLEWARE_END].to_f - Thread.current[POST_MIDDLEWARE_START].to_f)
             middleware_time = (pre_time + post_time) * 1_000
