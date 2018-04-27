@@ -7,9 +7,9 @@ module Traxor
       class Pre
         # any timestamps before this are thrown out and the parser
         # will try again with a larger unit (2000/1/1 UTC)
-        EARLIEST_ACCEPTABLE_TIME = Time.at(946684800)
+        EARLIEST_ACCEPTABLE_TIME = Time.at(946_684_800).utc
 
-        DIVISORS = [1_000_000, 1_000, 1]
+        DIVISORS = [1_000_000, 1_000, 1].freeze
 
         def initialize(app)
           @app = app
@@ -33,7 +33,7 @@ module Traxor
             POST_MIDDLEWARE_END
           ]
 
-          if times.all? { |t| Thread.current[t].present? }
+          if times.all? { |time| Thread.current[time].present? }
             pre_time = (Thread.current[PRE_MIDDLEWARE_END].to_f - Thread.current[PRE_MIDDLEWARE_START].to_f)
             post_time = (Thread.current[POST_MIDDLEWARE_END].to_f - Thread.current[POST_MIDDLEWARE_START].to_f)
             middleware_time = (pre_time + post_time) * 1_000

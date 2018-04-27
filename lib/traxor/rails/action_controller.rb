@@ -10,11 +10,10 @@ module Traxor
 
   ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
-    request = ActionDispatch::Request.new(event.payload[:headers])
     exception = event.payload[:exception]
     duration = event.duration || 0.0
-    db_runtime = event.payload[:db_runtime] || 0
-    view_runtime = event.payload[:view_runtime] || 0
+    db_runtime = event.payload[:db_runtime] || 0.0
+    view_runtime = event.payload[:view_runtime] || 0.0
     ruby_runtime = duration.to_f - db_runtime.to_f - view_runtime.to_f
 
     Metric.count 'rails.action_controller.count', 1
@@ -22,9 +21,6 @@ module Traxor
     Metric.measure 'rails.action_controller.ruby.duration', "#{ruby_runtime.to_f.round(2)}ms"
     Metric.measure 'rails.action_controller.db.duration', "#{db_runtime.to_f.round(2)}ms"
     Metric.measure 'rails.action_controller.view.duration', "#{view_runtime.to_f.round(2)}ms"
-
-    if exception.present?
-      Metric.count 'rails.action_controller.exception.count', 1
-    end
+    Metric.count 'rails.action_controller.exception.count', 1 if exception.present?
   end
 end

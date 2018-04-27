@@ -17,7 +17,7 @@ module Traxor
 
   config_accessor :logger do
     Logger.new(STDOUT, progname: 'traxor', level: Logger::INFO).tap do |logger|
-      logger.formatter = proc do |severity, time, progname, msg|
+      logger.formatter = proc do |severity, _time, progname, msg|
         "[#{progname}] #{severity} : #{msg}\n"
       end
     end
