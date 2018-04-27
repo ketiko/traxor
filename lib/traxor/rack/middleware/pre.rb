@@ -16,34 +16,28 @@ module Traxor
         end
 
         def call(env)
-          Thread.current[PRE_MIDDLEWARE_START] = Time.now.to_f
-          queue_duration = nil
-          request_start = env[X_REQUEST_START]
-          if request_start
-            parsed = parse_request_queue(request_start)
-            queue_duration = (Thread.current[PRE_MIDDLEWARE_START].to_f - parsed.to_f) * 1_000
-          end
+          Middleware.pre_start_at = Time.now.utc
           status, headers, body = @app.call(env)
-          Thread.current[POST_MIDDLEWARE_END] = Time.now.to_f
+          Middleware.post_finish_at = Time.now.utc
 
           times = [
-            PRE_MIDDLEWARE_START,
-            PRE_MIDDLEWARE_END,
-            POST_MIDDLEWARE_START,
-            POST_MIDDLEWARE_END
+            Middleware.pre_start_at,
+            Middleware.pre_finish_at,
+            Middleware.post_start_at,
+            Middleware.post_finish_at,
           ]
 
-          if times.all? { |time| Thread.current[time] }
-            pre_time = (Thread.current[PRE_MIDDLEWARE_END].to_f - Thread.current[PRE_MIDDLEWARE_START].to_f)
-            post_time = (Thread.current[POST_MIDDLEWARE_END].to_f - Thread.current[POST_MIDDLEWARE_START].to_f)
-            middleware_time = (pre_time + post_time) * 1_000
-            total_time = (Thread.current[POST_MIDDLEWARE_END].to_f - Thread.current[PRE_MIDDLEWARE_START].to_f) * 1_000
-
-            Metric.measure 'rack.request.middleware.duration'.freeze, "#{middleware_time.round(2)}ms"
-            Metric.measure 'rack.request.duration'.freeze, "#{total_time.round(2)}ms"
+          if times.all?
+            Metric.measure 'rack.request.middleware.duration'.freeze, "#{Middleware.total.round(2)}ms"
+            Metric.measure 'rack.request.duration'.freeze, "#{Middleware.request_total.round(2)}ms"
           end
 
-          Metric.measure 'rack.request.queue.duration'.freeze, "#{queue_duration.round(2)}ms" if queue_duration
+          if env[X_REQUEST_START]
+            parsed = parse_request_queue(env[X_REQUEST_START])
+            queue_duration = (Middleware.pre_start_at.to_f - parsed.to_f) * 1_000
+            Metric.measure 'rack.request.queue.duration'.freeze, "#{queue_duration.round(2)}ms" if queue_duration
+          end
+
           Metric.count 'rack.request.count'.freeze, 1
 
           [status, headers, body]
