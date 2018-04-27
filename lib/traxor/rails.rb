@@ -1,12 +1,11 @@
 module Traxor
   class Rails < ::Rails::Engine
     initializer 'traxor.setup' do |app|
-      Traxor.configure do |config|
-        config.logger = ::Rails.logger
-      end
+      # Traxor.configure do |config|
+      #   config.logger = ::Rails.logger
+      # end
 
-      require 'traxor/rack/middleware/pre'
-      require 'traxor/rack/middleware/post'
+      require 'traxor/rack'
       app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
       app.config.middleware.use Traxor::Rack::Middleware::Post
 

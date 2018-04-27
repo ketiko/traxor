@@ -3,7 +3,7 @@ module Traxor
     event = ActiveSupport::Notifications::Event.new(*args)
     url = event.payload[:url]
     duration = event.duration || 0.0
-    tags = { host: normalize_name(url.host), method: normalize_name(event.payload[:method]) }
+    tags = { external_host: Traxor.normalize_name(url.host), external_method: normalize_name(event.payload[:method]) }
 
     Metric.count 'faraday.request.count', 1, tags
     Metric.count "faraday.request.count.#{tags[:host]}", 1, tags

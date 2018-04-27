@@ -7,9 +7,9 @@ module Traxor
         end
 
         def call(env)
-          env['traxor.rack.middleware.pre_middleware_end'] = Time.now.to_f
+          Thread.current[PRE_MIDDLEWARE_END] = Time.now.to_f
           status, headers, response = @app.call(env)
-          env['traxor.rack.middleware.post_middleware_start'] = Time.now.to_f
+          Thread.current[POST_MIDDLEWARE_START] = Time.now.to_f
 
           [status, headers, response]
         end

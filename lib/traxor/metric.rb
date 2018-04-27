@@ -13,7 +13,7 @@ module Traxor
     end
 
     def self.tag_string(tags)
-      tags.map do |tag_name, tag_value|
+      Traxor.current_tags.merge(tags).map do |tag_name, tag_value|
         "tag##{tag_name}=#{tag_value}"
       end.join(' ')
     end
