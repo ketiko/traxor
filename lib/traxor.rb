@@ -27,10 +27,6 @@ module Traxor
     yield config
   end
 
-  def self.normalize_name(value)
-    value.to_s.gsub(/::/, '.').underscore
-  end
-
   def self.controller_tags
     Thread.current[CONTROLLER_TAGS] || {}
   end

@@ -1,15 +1,15 @@
 module Traxor
   module Metric
     def self.count(name, value, tags = {})
-      logger.info("count##{name}=#{value} #{tag_string(tags)}".strip)
+      logger.info(normalize_name("count##{name}=#{value} #{tag_string(tags)}".strip))
     end
 
     def self.measure(name, value, tags = {})
-      logger.info("measure##{name}=#{value} #{tag_string(tags)}".strip)
+      logger.info(normalize_name("measure##{name}=#{value} #{tag_string(tags)}".strip))
     end
 
     def self.sample(name, value, tags = {})
-      logger.info("sample##{name}=#{value} #{tag_string(tags)}".strip)
+      logger.info(normalize_name("sample##{name}=#{value} #{tag_string(tags)}".strip))
     end
 
     def self.tag_string(tags)
@@ -20,6 +20,10 @@ module Traxor
 
     def self.logger
       @logger ||= Traxor.config.logger
+    end
+
+    def self.normalize_name(value)
+      value.to_s.gsub(/::/, '.').underscore
     end
   end
 end

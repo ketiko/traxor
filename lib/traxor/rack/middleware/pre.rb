@@ -39,21 +39,8 @@ module Traxor
             middleware_time = (pre_time + post_time) * 1_000
             total_time = (Thread.current[POST_MIDDLEWARE_END].to_f - Thread.current[PRE_MIDDLEWARE_START].to_f) * 1_000
 
-            if controller_tags = Traxor.controller_tags
-              controller_path = controller_tags.values.join('.')
-
-              Metric.measure 'rack.request.middleware.duration', "#{middleware_time.round(2)}ms"
-              Metric.measure "rack.request.middleware.duration.#{controller_path}", "#{middleware_time.round(2)}ms"
-              Metric.measure "rack.request.queue.duration.#{controller_path}", "#{queue_duration.round(2)}ms" if queue_duration
-              Metric.measure "rack.request.duration.#{controller_path}", "#{total_time.round(2)}ms"
-              Metric.count "rack.request.count.#{controller_path}", 1
-            else
-              puts 'missing controller'
-            end
-
+            Metric.measure 'rack.request.middleware.duration', "#{middleware_time.round(2)}ms"
             Metric.measure 'rack.request.duration', "#{total_time.round(2)}ms"
-          else
-            puts 'missing times'
           end
 
           Metric.measure 'rack.request.queue.duration', "#{queue_duration.round(2)}ms" if queue_duration
