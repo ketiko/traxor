@@ -11,10 +11,14 @@ module Traxor
                             :request_start_at
 
       def self.time_before
+        return 0 unless pre_start_at
+
         pre_finish_at.to_f - pre_start_at.to_f
       end
 
       def self.time_after
+        return 0 unless post_start_at
+
         post_finish_at.to_f - post_start_at.to_f
       end
 
@@ -23,10 +27,14 @@ module Traxor
       end
 
       def self.request_total
+        return 0 unless pre_start_at
+
         (post_finish_at.to_f - pre_start_at.to_f) * 1_000
       end
 
       def self.request_queue_total
+        return 0 unless request_start_at
+
         (pre_start_at.to_f - request_start_at.to_f) * 1_000
       end
     end
