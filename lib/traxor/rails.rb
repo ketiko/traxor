@@ -1,12 +1,12 @@
+require 'traxor/rack'
+
 module Traxor
   class Rails < ::Rails::Engine
-    initializer 'traxor.setup' do |app|
-      Traxor.configure do |config|
-        config.logger = ::Rails.logger
+    initializer 'traxor.setup'.freeze do |app|
+      if ::Rails.env.development? || ::Rails.env.test?
+        Traxor.initialize_logger(::Rails.root.join('log'.freeze, 'traxor.log'.freeze))
       end
 
-      require 'traxor/rack/middleware/pre'
-      require 'traxor/rack/middleware/post'
       app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
       app.config.middleware.use Traxor::Rack::Middleware::Post
 
@@ -25,8 +25,8 @@ module Traxor
       require 'traxor/faraday' if defined?(Faraday)
 
       if defined?(Sidekiq)
+        require 'traxor/sidekiq'
         ::Sidekiq.server_middleware do |chain|
-          require 'traxor/sidekiq'
           chain.add Traxor::Sidekiq
         end
       end

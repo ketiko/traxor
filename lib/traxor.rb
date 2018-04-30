@@ -1,25 +1,22 @@
-require 'active_support/configurable'
-require 'active_support/inflector/inflections'
 require 'logger'
 require 'traxor/faraday' if defined?(Faraday)
 require 'traxor/metric'
-require 'traxor/rails' if defined?(Rails)
+require 'traxor/rack' if defined?(Rack)
+require 'traxor/rails' if defined?(Rails::Engine)
 require 'traxor/sidekiq' if defined?(Sidekiq)
+require 'traxor/tags'
 require 'traxor/version'
 
 module Traxor
-  include ActiveSupport::Configurable
-  config_accessor :logger do
-    Logger.new(STDOUT).tap do |l|
-      l.level = Logger::INFO
+  def self.logger
+    defined?(@logger) ? @logger : initialize_logger
+  end
+
+  def self.initialize_logger(log_target = STDOUT)
+    @logger = Logger.new(log_target, level: Logger::INFO, progname: name)
+    @logger.formatter = proc do |severity, _time, progname, msg|
+      "[#{progname}] #{severity} : #{msg}\n"
     end
-  end
-
-  def self.configure
-    yield config
-  end
-
-  def self.normalize_name(value)
-    value.to_s.gsub(/::/, '.').underscore
+    @logger
   end
 end
