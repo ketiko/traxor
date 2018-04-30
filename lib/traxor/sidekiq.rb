@@ -11,7 +11,7 @@ module Traxor
         time = Benchmark.ms do
           yield
         end
-        Metric.measure 'sidekiq.worker.duration'.freeze, "#{time.round(2)}ms", tags
+        Metric.measure 'sidekiq.worker.duration'.freeze, "#{time.round(2)}ms", tags if time.positive?
         Metric.count 'sidekiq.worker.count'.freeze, 1, tags
       rescue StandardError
         Metric.count 'sidekiq.worker.exception.count'.freeze, 1, tags

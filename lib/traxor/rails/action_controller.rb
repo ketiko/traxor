@@ -11,16 +11,16 @@ module Traxor
   ActiveSupport::Notifications.subscribe 'process_action.action_controller'.freeze do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
     exception = event.payload[:exception]
-    duration = event.duration || 0.0
-    db_runtime = event.payload[:db_runtime] || 0.0
-    view_runtime = event.payload[:view_runtime] || 0.0
-    ruby_runtime = duration.to_f - db_runtime.to_f - view_runtime.to_f
+    duration = (event.duration || 0.0).to_f
+    db_runtime = (event.payload[:db_runtime] || 0.0).to_f
+    view_runtime = (event.payload[:view_runtime] || 0.0).to_f
+    ruby_runtime = duration - db_runtime - view_runtime
 
     Metric.count 'rails.action_controller.count'.freeze, 1
-    Metric.measure 'rails.action_controller.total.duration'.freeze, "#{duration.to_f.round(2)}ms"
-    Metric.measure 'rails.action_controller.ruby.duration'.freeze, "#{ruby_runtime.to_f.round(2)}ms"
-    Metric.measure 'rails.action_controller.db.duration'.freeze, "#{db_runtime.to_f.round(2)}ms"
-    Metric.measure 'rails.action_controller.view.duration'.freeze, "#{view_runtime.to_f.round(2)}ms"
+    Metric.measure 'rails.action_controller.total.duration'.freeze, "#{duration.round(2)}ms" if duration.positive?
+    Metric.measure 'rails.action_controller.ruby.duration'.freeze, "#{ruby_runtime.round(2)}ms" if ruby_runtime.positive?
+    Metric.measure 'rails.action_controller.db.duration'.freeze, "#{db_runtime.round(2)}ms" if db_runtime.positive?
+    Metric.measure 'rails.action_controller.view.duration'.freeze, "#{view_runtime.round(2)}ms" if view_runtime.positive?
     Metric.count 'rails.action_controller.exception.count'.freeze, 1 if exception
   end
 end

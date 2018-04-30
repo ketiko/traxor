@@ -16,9 +16,9 @@ module Traxor
 
   ActiveSupport::Notifications.subscribe 'instantiation.active_record'.freeze do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
-    record_count = event.payload[:record_count]
+    record_count = event.payload[:record_count].to_i
     tags = { active_record_class_name: event.payload[:class_name] }
 
-    Metric.count 'rails.active_record.instantiation.count'.freeze, record_count, tags
+    Metric.count 'rails.active_record.instantiation.count'.freeze, record_count, tags if record_count.positive?
   end
 end
