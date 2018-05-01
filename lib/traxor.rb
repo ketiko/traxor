@@ -1,4 +1,5 @@
 require 'logger'
+require 'rails'
 require 'traxor/metric'
 require 'traxor/rails'
 require 'traxor/tags'
