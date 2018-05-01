@@ -1,5 +1,3 @@
-require 'traxor/rack'
-
 module Traxor
   class Rails < ::Rails::Engine
     initializer 'traxor.setup'.freeze do |app|
@@ -7,6 +5,7 @@ module Traxor
         Traxor.initialize_logger(::Rails.root.join('log'.freeze, 'traxor.log'.freeze))
       end
 
+      require 'traxor/rack'
       app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
       app.config.middleware.use Traxor::Rack::Middleware::Post
 
