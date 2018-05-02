@@ -1,4 +1,6 @@
-require 'active_support/inflector/inflections'
+# frozen_string_literal: true
+
+require 'active_support/core_ext/string/inflections'
 
 module Traxor
   module Metric
@@ -15,17 +17,21 @@ module Traxor
     end
 
     def self.tag_string(tags)
-      Traxor::Tags.all.merge(tags).map do |tag_name, tag_value|
+      Hash(tags).merge(Traxor::Tags.all).map do |tag_name, tag_value|
         "tag##{tag_name}=#{tag_value}"
-      end.join(' '.freeze)
+      end.join(' ')
     end
 
     def self.normalize_values(value)
-      value.to_s.gsub(/::/, '.'.freeze).underscore.strip
+      value.to_s.gsub(/::/, '.').underscore.strip
     end
 
     def self.log(string)
-      Traxor.logger.info(normalize_values(string))
+      logger.info(normalize_values(string))
+    end
+
+    def self.logger
+      Traxor.logger
     end
   end
 end

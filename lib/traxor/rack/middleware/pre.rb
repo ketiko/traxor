@@ -1,9 +1,21 @@
+# frozen_string_literal: true
+
 require 'traxor/rack/middleware/queue_time'
 
 module Traxor
   module Rack
     module Middleware
       class Pre
+        MIDDLEWARE_METRIC = 'rack.request.middleware.duration'
+        DURATION_METRIC = 'rack.request.duration'
+        QUEUE_METRIC = 'rack.request.queue.duration'
+        REQUEST_COUNT_METRIC = 'rack.request.count'
+        GC_DURATION_METRIC = 'ruby.gc.duration'
+        GC_COUNT_METRIC = 'ruby.gc.count'
+        MAJOR_METRIC = 'ruby.gc.major.count'
+        MINOR_METRIC = 'ruby.gc.minor.count'
+        ALLOCATED_METRIC = 'ruby.gc.allocated_objects.count'
+
         def initialize(app)
           @app = app
         end
@@ -18,22 +30,31 @@ module Traxor
           Middleware.gc_stat_after = GC.stat
           Middleware.post_finish_at = Time.now.utc
 
-          record_metrics
+          record_request_metrics
+          record_gc_metrics
 
           [status, headers, body]
         end
 
-        def record_metrics
-          Metric.measure 'rack.request.middleware.duration'.freeze, "#{Middleware.middleware_total.round(2)}ms" if Middleware.middleware_total.positive?
-          Metric.measure 'rack.request.duration'.freeze, "#{Middleware.request_total.round(2)}ms" if Middleware.request_total.positive?
-          Metric.measure 'rack.request.queue.duration'.freeze, "#{Middleware.request_queue_total.round(2)}ms" if Middleware.request_queue_total.positive?
-          Metric.count 'rack.request.count'.freeze, 1
+        def record_request_metrics
+          if Middleware.middleware_total.positive?
+            Metric.measure MIDDLEWARE_METRIC, "#{Middleware.middleware_total.round(2)}ms"
+          end
+          if Middleware.request_total.positive?
+            Metric.measure DURATION_METRIC, "#{Middleware.request_total.round(2)}ms"
+          end
+          if Middleware.request_queue_total.positive?
+            Metric.measure QUEUE_METRIC, "#{Middleware.request_queue_total.round(2)}ms"
+          end
+          Metric.count REQUEST_COUNT_METRIC, 1
+        end
 
-          Metric.measure 'ruby.gc.duration'.freeze, "#{(GC::Profiler.total_time * 1_000).to_f.round(2)}ms"
-          Metric.count 'ruby.gc.count'.freeze, Middleware.gc_count
-          Metric.count 'ruby.gc.major.count'.freeze, Middleware.gc_major_count
-          Metric.count 'ruby.gc.minor.count'.freeze, Middleware.gc_minor_count
-          Metric.count 'ruby.gc.allocated_objects.count'.freeze, Middleware.gc_allocated_objects_count
+        def record_gc_metrics
+          Metric.measure GC_DURATION_METRIC, "#{(GC::Profiler.total_time * 1_000).to_f.round(2)}ms"
+          Metric.count GC_COUNT_METRIC, Middleware.gc_count
+          Metric.count MAJOR_METRIC, Middleware.gc_major_count
+          Metric.count MINOR_METRIC, Middleware.gc_minor_count
+          Metric.count ALLOCATED_METRIC, Middleware.gc_allocated_objects_count
 
           GC::Profiler.clear
         end

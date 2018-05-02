@@ -1,0 +1,25 @@
+require: rubocop-rspec
+
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.4
+
+Rails:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/BlockLength:
+  Exclude:
+    - '**/spec/**/*'
+    - 'traxor.gemspec'
+    - 'Guardfile'
+
+Style/StringLiterals:
+  Exclude:
+    - 'bin/*'
+    - 'gemfiles/*'
