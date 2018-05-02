@@ -1,4 +1,4 @@
-require 'active_support/inflector/inflections'
+require 'active_support/core_ext/string/inflections'
 
 module Traxor
   module Metric

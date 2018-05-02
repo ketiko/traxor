@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'faraday'
+  spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'pry-byebug'
   spec.add_development_dependency 'rails'
   spec.add_development_dependency 'rake'
