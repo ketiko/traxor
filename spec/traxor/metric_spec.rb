@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Traxor::Metric do
+  let(:fake_logger) { instance_double(Logger).as_null_object }
+
+  before do
+    allow(described_class).to receive(:logger).and_return(fake_logger)
+  end
+
   describe '.count' do
     subject(:record_metric) { described_class.count('requests', '4') }
-
-    let(:fake_logger) { instance_double(Logger).as_null_object }
-
-    before do
-      allow(described_class).to receive(:logger).and_return(fake_logger)
-    end
 
     let(:expected_metric_string) { 'count#requests=4' }
 
@@ -22,12 +22,7 @@ RSpec.describe Traxor::Metric do
   describe '.measure' do
     subject(:record_metric) { described_class.measure('duration', '10ms', a: 1) }
 
-    let(:fake_logger) { instance_double(Logger).as_null_object }
     let(:expected_metric_string) { 'measure#duration=10ms tag#a=1' }
-
-    before do
-      allow(described_class).to receive(:logger).and_return(fake_logger)
-    end
 
     it 'logs the metric' do
       record_metric
@@ -39,12 +34,7 @@ RSpec.describe Traxor::Metric do
   describe '.sample' do
     subject(:record_metric) { described_class.sample('memory', '100', b: 2, c: 3) }
 
-    let(:fake_logger) { instance_double(Logger).as_null_object }
     let(:expected_metric_string) { 'sample#memory=100 tag#b=2 tag#c=3' }
-
-    before do
-      allow(described_class).to receive(:logger).and_return(fake_logger)
-    end
 
     it 'logs the metric' do
       record_metric
@@ -56,12 +46,7 @@ RSpec.describe Traxor::Metric do
   describe '.tag_string' do
     subject { described_class.tag_string(tags) }
 
-    let(:fake_logger) { instance_double(Logger).as_null_object }
     let(:tags) { { d: 4, e: 5 } }
-
-    before do
-      allow(described_class).to receive(:logger).and_return(fake_logger)
-    end
 
     context 'when global tags missing' do
       before do
@@ -104,11 +89,6 @@ RSpec.describe Traxor::Metric do
   describe '.log' do
     let(:unformatted) { 'THE::TestThis.a_b' }
     let(:formatted) { 'the.test_this.a_b' }
-    let(:fake_logger) { instance_double(Logger).as_null_object }
-
-    before do
-      allow(described_class).to receive(:logger).and_return(fake_logger)
-    end
 
     it 'logs an info string normalized' do
       described_class.log(unformatted)
