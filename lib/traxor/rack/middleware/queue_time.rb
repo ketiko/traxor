@@ -15,14 +15,8 @@ module Traxor
 
           value = env[X_REQUEST_START].to_s.sub(/t=/, ''.freeze)
           DIVISORS.each do |divisor|
-            begin
-              time = Time.at(value.to_f / divisor).utc
-              return time if time > EARLIEST_ACCEPTABLE_TIME
-            rescue RangeError
-              # On Ruby versions built with a 32-bit time_t, attempting to
-              # instantiate a Time object in the far future raises a RangeError,
-              # in which case we know we've chosen the wrong divisor.
-            end
+            time = Time.at(value.to_f / divisor).utc
+            return time if time > EARLIEST_ACCEPTABLE_TIME
           end
 
           nil

@@ -2,6 +2,7 @@ require: rubocop-rspec
 
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.2
 
 Rails:
   Enabled: true
@@ -11,3 +12,9 @@ Style/Documentation:
 
 Metrics/LineLength:
   Max: 100
+
+Metrics/BlockLength:
+  Exclude:
+    - '**/spec/**/*'
+    - 'traxor.gemspec'
+    - 'Guardfile'

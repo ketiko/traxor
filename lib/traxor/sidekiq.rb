@@ -2,19 +2,18 @@ require 'benchmark'
 
 module Traxor
   class Sidekiq
+    DURATION_METRIC = 'sidekiq.worker.duration'.freeze
+    COUNT_METRIC = 'sidekiq.worker.count'.freeze
+    EXCEPTION_METRIC = 'sidekiq.worker.exception.count'.freeze
+
     def call(worker, _job, queue)
-      tags = Traxor::Tags.sidekiq = {
-        sidekiq_worker: worker.class.name,
-        sidekiq_queue: queue
-      }
+      tags = Traxor::Tags.sidekiq = { sidekiq_worker: worker.class.name, sidekiq_queue: queue }
       begin
-        time = Benchmark.ms do
-          yield
-        end
-        Metric.measure 'sidekiq.worker.duration'.freeze, "#{time.round(2)}ms", tags if time.positive?
-        Metric.count 'sidekiq.worker.count'.freeze, 1, tags
+        time = Benchmark.ms { yield }
+        Metric.measure DURATION_METRIC, "#{time.round(2)}ms", tags if time.positive?
+        Metric.count COUNT_METRIC.freeze, 1, tags
       rescue StandardError
-        Metric.count 'sidekiq.worker.exception.count'.freeze, 1, tags
+        Metric.count EXCEPTION_METRIC, 1, tags
         raise
       end
     end

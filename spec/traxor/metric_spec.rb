@@ -1,43 +1,43 @@
 RSpec.describe Traxor::Metric do
-  describe '.count' do
-    subject { described_class.count('name', 'value') }
+  let(:fake_logger) { instance_double(Logger).as_null_object }
 
-    let(:expected_metric_string) do
-      'count#name=value '
-    end
+  before do
+    allow(described_class).to receive(:logger).and_return(fake_logger)
+  end
+
+  describe '.count' do
+    subject(:record_metric) { described_class.count('name', 'value') }
+
+    let(:expected_metric_string) { 'count#name=value' }
 
     it 'logs the metric' do
-      expect(described_class).to receive(:log).with(expected_metric_string)
+      record_metric
 
-      subject
+      expect(fake_logger).to have_received(:info).with(expected_metric_string)
     end
   end
 
   describe '.measure' do
-    subject { described_class.measure('name', 'value', a: 1) }
+    subject(:record_metric) { described_class.measure('name', 'value', a: 1) }
 
-    let(:expected_metric_string) do
-      'measure#name=value tag#a=1'
-    end
+    let(:expected_metric_string) { 'measure#name=value tag#a=1' }
 
     it 'logs the metric' do
-      expect(described_class).to receive(:log).with(expected_metric_string)
+      record_metric
 
-      subject
+      expect(fake_logger).to have_received(:info).with(expected_metric_string)
     end
   end
 
   describe '.sample' do
-    subject { described_class.sample('name', 'value', a: 1, b: 2) }
+    subject(:record_metric) { described_class.sample('name', 'value', a: 1, b: 2) }
 
-    let(:expected_metric_string) do
-      'sample#name=value tag#a=1 tag#b=2'
-    end
+    let(:expected_metric_string) { 'sample#name=value tag#a=1 tag#b=2' }
 
     it 'logs the metric' do
-      expect(described_class).to receive(:log).with(expected_metric_string)
+      record_metric
 
-      subject
+      expect(fake_logger).to have_received(:info).with(expected_metric_string)
     end
   end
 
@@ -89,9 +89,9 @@ RSpec.describe Traxor::Metric do
     let(:formatted) { 'the.test_this.a_b' }
 
     it 'logs an info string normalized' do
-      expect(Traxor.logger).to receive(:info).with(formatted)
-
       described_class.log(unformatted)
+
+      expect(fake_logger).to have_received(:info).with(formatted)
     end
   end
 end

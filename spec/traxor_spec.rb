@@ -21,7 +21,9 @@ RSpec.describe Traxor do
       it { expect(logger.level).to eq(Logger::INFO) }
       it { expect(logger.progname).to eq(described_class.name) }
       it { expect(logger.instance_variable_get(:@logdev).dev).to eq(STDOUT) }
-      it { expect { logger.info(message) }.to output(formatted_log_output).to_stdout_from_any_process }
+      it do
+        expect { logger.info(message) }.to output(formatted_log_output).to_stdout_from_any_process
+      end
     end
 
     context 'when passing log_target' do

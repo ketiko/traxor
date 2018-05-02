@@ -25,7 +25,11 @@ module Traxor
     end
 
     def self.log(string)
-      Traxor.logger.info(normalize_values(string))
+      logger.info(normalize_values(string))
+    end
+
+    def self.logger
+      Traxor.logger
     end
   end
 end
