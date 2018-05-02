@@ -25,7 +25,7 @@ RSpec.describe Traxor::Rack::Middleware::QueueTime do
         context "when multiple of 1 #{divisor}" do
           let(:env) { { 'HTTP_X_REQUEST_START' => "t=#{time.to_f * divisor}" } }
 
-          it { is_expected.to be_within(0.0001).of(time) }
+          it { is_expected.to be_within(0.000001).of(time) }
         end
       end
     end
