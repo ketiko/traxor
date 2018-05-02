@@ -30,9 +30,9 @@ RSpec.describe Traxor::Metric do
   end
 
   describe '.sample' do
-    subject(:record_metric) { described_class.sample('name', 'value', a: 1, b: 2) }
+    subject(:record_metric) { described_class.sample('name', 'value', b: 2, c: 3) }
 
-    let(:expected_metric_string) { 'sample#name=value tag#a=1 tag#b=2' }
+    let(:expected_metric_string) { 'sample#name=value tag#b=2 tag#c=3' }
 
     it 'logs the metric' do
       record_metric
@@ -44,7 +44,7 @@ RSpec.describe Traxor::Metric do
   describe '.tag_string' do
     subject { described_class.tag_string(tags) }
 
-    let(:tags) { { a: 3, b: 4 } }
+    let(:tags) { { d: 4, e: 5 } }
 
     context 'when global tags missing' do
       before do
@@ -52,7 +52,7 @@ RSpec.describe Traxor::Metric do
         Traxor::Tags.sidekiq = nil
       end
 
-      it { is_expected.to eq('tag#a=3 tag#b=4') }
+      it { is_expected.to eq('tag#d=4 tag#e=5') }
     end
 
     context 'when global tags present' do
