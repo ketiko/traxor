@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'benchmark'
+require 'active_support/core_ext/benchmark'
 
 module Traxor
   class Sidekiq
@@ -13,10 +13,11 @@ module Traxor
       begin
         time = Benchmark.ms { yield }
         Metric.measure DURATION_METRIC, "#{time.round(2)}ms", tags if time.positive?
-        Metric.count COUNT_METRIC.freeze, 1, tags
       rescue StandardError
         Metric.count EXCEPTION_METRIC, 1, tags
         raise
+      ensure
+        Metric.count COUNT_METRIC.freeze, 1, tags
       end
     end
   end

@@ -1,21 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe Traxor::Metric do
-  let(:fake_logger) { instance_double(Logger).as_null_object }
-
-  before do
-    allow(described_class).to receive(:logger).and_return(fake_logger)
-  end
-
   describe '.count' do
     subject(:record_metric) { described_class.count('requests', '4') }
 
-    let(:expected_metric_string) { 'count#requests=4' }
+    let(:expected_metric_string) { 'count#requests=4 ' }
 
     it 'logs the metric' do
-      record_metric
+      expect(described_class).to receive(:log).with(expected_metric_string)
 
-      expect(fake_logger).to have_received(:info).with(expected_metric_string)
+      record_metric
     end
   end
 
@@ -25,9 +19,9 @@ RSpec.describe Traxor::Metric do
     let(:expected_metric_string) { 'measure#duration=10ms tag#a=1' }
 
     it 'logs the metric' do
-      record_metric
+      expect(described_class).to receive(:log).with(expected_metric_string)
 
-      expect(fake_logger).to have_received(:info).with(expected_metric_string)
+      record_metric
     end
   end
 
@@ -37,39 +31,34 @@ RSpec.describe Traxor::Metric do
     let(:expected_metric_string) { 'sample#memory=100 tag#b=2 tag#c=3' }
 
     it 'logs the metric' do
-      record_metric
+      expect(described_class).to receive(:log).with(expected_metric_string)
 
-      expect(fake_logger).to have_received(:info).with(expected_metric_string)
+      record_metric
     end
   end
 
   describe '.tag_string' do
-    subject { described_class.tag_string(tags) }
+    subject(:tag_string) { described_class.tag_string(tags) }
 
     let(:tags) { { d: 4, e: 5 } }
 
-    context 'when global tags missing' do
-      before do
+    it 'only includes the immediate tags' do
+      Thread.new do
         Traxor::Tags.controller = nil
         Traxor::Tags.sidekiq = nil
-      end
 
-      it { is_expected.to eq('tag#d=4 tag#e=5') }
+        expect(tag_string).to eq('tag#d=4 tag#e=5')
+      end.join
     end
 
-    context 'when global tags present' do
-      around do |example|
+    it 'uses the global values when present' do
+      Thread.new do
         Traxor::Tags.controller = { controller: 1 }
         Traxor::Tags.sidekiq = { sidekiq: 2 }
 
-        example.run
-
-        Traxor::Tags.controller = nil
-        Traxor::Tags.sidekiq = nil
-      end
-
-      it { is_expected.to include('tag#controller=1') }
-      it { is_expected.to include('tag#sidekiq=2') }
+        expect(tag_string).to include('tag#controller=1')
+        expect(tag_string).to include('tag#sidekiq=2')
+      end.join
     end
   end
 
@@ -91,9 +80,9 @@ RSpec.describe Traxor::Metric do
     let(:formatted) { 'the.test_this.a_b' }
 
     it 'logs an info string normalized' do
-      described_class.log(unformatted)
+      expect(described_class.logger).to receive(:info).with(formatted)
 
-      expect(fake_logger).to have_received(:info).with(formatted)
+      described_class.log(unformatted)
     end
   end
 end
