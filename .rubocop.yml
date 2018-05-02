@@ -18,3 +18,8 @@ Metrics/BlockLength:
     - '**/spec/**/*'
     - 'traxor.gemspec'
     - 'Guardfile'
+
+Style/StringLiterals:
+  Exclude:
+    - 'bin/*'
+    - 'gemfiles/*'
