@@ -1,11 +1,11 @@
-appraise 'rails_5_0' do
-  gem 'rails', '~> 5.0'
+appraise 'active_support_5_0' do
+  gem 'activesupport', '~> 5.0'
 end
 
-appraise 'rails_5_1' do
-  gem 'rails', '~> 5.1'
+appraise 'active_support_5_1' do
+  gem 'activesupport', '~> 5.1'
 end
 
-appraise 'rails_5_2' do
-  gem 'rails', '~> 5.2'
+appraise 'active_support_5_2' do
+  gem 'activesupport', '~> 5.2'
 end

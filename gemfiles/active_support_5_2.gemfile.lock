@@ -2,8 +2,7 @@ PATH
   remote: ..
   specs:
     traxor (0.1.17)
-      activesupport
-      rails (>= 4.2)
+      activesupport (>= 5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -221,13 +220,14 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport (~> 5.2)
   appraisal
   bundler
   faraday
   lois
   pry
   pry-byebug
-  rails (~> 5.1)
+  rails
   rake
   reek
   rspec

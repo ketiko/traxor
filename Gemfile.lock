@@ -2,8 +2,7 @@ PATH
   remote: .
   specs:
     traxor (0.1.17)
-      activesupport
-      rails (>= 4.2)
+      activesupport (>= 5.0)
 
 GEM
   remote: https://rubygems.org/
