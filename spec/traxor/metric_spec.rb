@@ -6,9 +6,9 @@ RSpec.describe Traxor::Metric do
   end
 
   describe '.count' do
-    subject(:record_metric) { described_class.count('name', 'value') }
+    subject(:record_metric) { described_class.count('requests', '4') }
 
-    let(:expected_metric_string) { 'count#name=value' }
+    let(:expected_metric_string) { 'count#requests=4' }
 
     it 'logs the metric' do
       record_metric
@@ -18,9 +18,9 @@ RSpec.describe Traxor::Metric do
   end
 
   describe '.measure' do
-    subject(:record_metric) { described_class.measure('name', 'value', a: 1) }
+    subject(:record_metric) { described_class.measure('duration', '10ms', a: 1) }
 
-    let(:expected_metric_string) { 'measure#name=value tag#a=1' }
+    let(:expected_metric_string) { 'measure#duration=10ms tag#a=1' }
 
     it 'logs the metric' do
       record_metric
@@ -30,9 +30,9 @@ RSpec.describe Traxor::Metric do
   end
 
   describe '.sample' do
-    subject(:record_metric) { described_class.sample('name', 'value', b: 2, c: 3) }
+    subject(:record_metric) { described_class.sample('memory', '100', b: 2, c: 3) }
 
-    let(:expected_metric_string) { 'sample#name=value tag#b=2 tag#c=3' }
+    let(:expected_metric_string) { 'sample#memory=100 tag#b=2 tag#c=3' }
 
     it 'logs the metric' do
       record_metric
@@ -56,12 +56,12 @@ RSpec.describe Traxor::Metric do
     end
 
     context 'when global tags present' do
-      before do
+      around do |example|
         Traxor::Tags.controller = { controller: 1 }
         Traxor::Tags.sidekiq = { sidekiq: 2 }
-      end
 
-      after do
+        example.run
+
         Traxor::Tags.controller = nil
         Traxor::Tags.sidekiq = nil
       end

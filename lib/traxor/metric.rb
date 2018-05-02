@@ -15,7 +15,7 @@ module Traxor
     end
 
     def self.tag_string(tags)
-      Traxor::Tags.all.merge(tags).map do |tag_name, tag_value|
+      Hash(tags).merge(Traxor::Tags.all).map do |tag_name, tag_value|
         "tag##{tag_name}=#{tag_value}"
       end.join(' '.freeze)
     end
