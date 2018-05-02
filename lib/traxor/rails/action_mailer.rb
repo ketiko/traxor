@@ -7,12 +7,15 @@ module Traxor
     module ActionMailer
       COUNT_METRIC = 'rails.action_mailer.sent.count'
 
-      ActiveSupport::Notifications.subscribe 'deliver.action_mailer' do |*args|
-        event = ActiveSupport::Notifications::Event.new(*args)
+      def self.record(event)
         tags = { action_mailer_class_name: event.payload[:mailer] }
-
         Metric.count COUNT_METRIC, 1, tags
       end
     end
   end
+end
+
+ActiveSupport::Notifications.subscribe 'deliver.action_mailer' do |*args|
+  event = ActiveSupport::Notifications::Event.new(*args)
+  Traxor::Rails::ActionMailer.record(event)
 end

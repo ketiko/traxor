@@ -7,7 +7,7 @@ RSpec.describe Traxor::Faraday do
     let(:now) { Time.now.utc }
     let(:event) do
       ActiveSupport::Notifications::Event.new(
-        'name',
+        nil,
         now,
         now + 0.05,
         nil,

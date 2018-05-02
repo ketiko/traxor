@@ -12,8 +12,7 @@ module Traxor
       VIEW_METRIC = 'rails.action_controller.view.duration'
       EXCEPTION_METRIC = 'rails.action_controller.exception.count'
 
-      ActiveSupport::Notifications.subscribe 'start_processing.action_controller' do |*args|
-        event = ActiveSupport::Notifications::Event.new(*args)
+      def self.set_controller_tags(event)
         Traxor::Tags.controller = {
           controller_name: event.payload[:controller],
           controller_action: event.payload[:action],
@@ -21,8 +20,7 @@ module Traxor
         }
       end
 
-      ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
-        event = ActiveSupport::Notifications::Event.new(*args)
+      def self.record(event)
         exception = event.payload[:exception]
         duration = (event.duration || 0.0).to_f
         db_runtime = (event.payload[:db_runtime] || 0.0).to_f
@@ -38,4 +36,14 @@ module Traxor
       end
     end
   end
+end
+
+ActiveSupport::Notifications.subscribe 'start_processing.action_controller' do |*args|
+  event = ActiveSupport::Notifications::Event.new(*args)
+  Traxor::Rails::ActionController.set_controller_tags(event)
+end
+
+ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
+  event = ActiveSupport::Notifications::Event.new(*args)
+  Traxor::Rails::ActionController.record(event)
 end
