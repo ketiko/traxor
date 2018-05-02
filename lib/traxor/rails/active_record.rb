@@ -12,23 +12,21 @@ module Traxor
       DELETE_METRIC = 'rails.active_record.statements.delete.count'
       INSTANTIATION_METRIC = 'rails.active_record.instantiation.count'
 
-      ActiveSupport::Notifications.subscribe 'sql.active_record' do |*args|
-        event = ActiveSupport::Notifications::Event.new(*args)
+      def self.record(event)
         sql = event.payload[:sql].to_s.strip.upcase
-        name = event.payload[:name].to_s.strip.upcase
-        next if ['SCHEMA'].any?(name)
+        name = event.payload[:name].to_s.strip
+        return if ['SCHEMA'].any?(name.upcase)
         tags = {}
         tags[:active_record_class_name] = name.split.first if name.length.positive?
 
         Metric.count COUNT_METRIC, 1, tags
-        Metric.count SELECT_METRIC, 1, tags if sql.starts_with?('SELECT')
-        Metric.count INSERT_METRIC, 1, tags if sql.starts_with?('INSERT')
-        Metric.count UPDATE_METRIC, 1, tags if sql.starts_with?('UPDATE')
-        Metric.count DELETE_METRIC, 1, tags if sql.starts_with?('DELETE')
+        Metric.count SELECT_METRIC, 1, tags if sql.start_with?('SELECT')
+        Metric.count INSERT_METRIC, 1, tags if sql.start_with?('INSERT')
+        Metric.count UPDATE_METRIC, 1, tags if sql.start_with?('UPDATE')
+        Metric.count DELETE_METRIC, 1, tags if sql.start_with?('DELETE')
       end
 
-      ActiveSupport::Notifications.subscribe 'instantiation.active_record' do |*args|
-        event = ActiveSupport::Notifications::Event.new(*args)
+      def self.record_instantiations(event)
         record_count = event.payload[:record_count].to_i
         tags = { active_record_class_name: event.payload[:class_name] }
 
@@ -36,4 +34,14 @@ module Traxor
       end
     end
   end
+end
+
+ActiveSupport::Notifications.subscribe 'sql.active_record' do |*args|
+  event = ActiveSupport::Notifications::Event.new(*args)
+  Traxor::Rails::ActiveRecord.record(event)
+end
+
+ActiveSupport::Notifications.subscribe 'instantiation.active_record' do |*args|
+  event = ActiveSupport::Notifications::Event.new(*args)
+  Traxor::Rails::ActiveRecord.record_instantiations(event)
 end

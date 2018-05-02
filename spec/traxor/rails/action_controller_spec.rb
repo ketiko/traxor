@@ -48,12 +48,24 @@ RSpec.describe Traxor::Rails::ActionController do
     let(:tags) { { faraday_host: 'www.google.com', faraday_method: :GET } }
 
     it 'records the metrics' do
-      expect(Traxor::Metric).to receive(:count).with(Traxor::Rails::ActionController::COUNT_METRIC, 1)
-      expect(Traxor::Metric).to receive(:measure).with(Traxor::Rails::ActionController::TOTAL_METRIC, '1000.0ms')
-      expect(Traxor::Metric).to receive(:measure).with(Traxor::Rails::ActionController::RUBY_METRIC, '945.0ms')
-      expect(Traxor::Metric).to receive(:measure).with(Traxor::Rails::ActionController::DB_METRIC, '30.0ms')
-      expect(Traxor::Metric).to receive(:measure).with(Traxor::Rails::ActionController::VIEW_METRIC, '25.0ms')
-      expect(Traxor::Metric).to receive(:count).with(Traxor::Rails::ActionController::EXCEPTION_METRIC, 1)
+      expect(Traxor::Metric).to(
+        receive(:count).with(Traxor::Rails::ActionController::COUNT_METRIC, 1)
+      )
+      expect(Traxor::Metric).to(
+        receive(:measure).with(Traxor::Rails::ActionController::TOTAL_METRIC, '1000.0ms')
+      )
+      expect(Traxor::Metric).to(
+        receive(:measure).with(Traxor::Rails::ActionController::RUBY_METRIC, '945.0ms')
+      )
+      expect(Traxor::Metric).to(
+        receive(:measure).with(Traxor::Rails::ActionController::DB_METRIC, '30.0ms')
+      )
+      expect(Traxor::Metric).to(
+        receive(:measure).with(Traxor::Rails::ActionController::VIEW_METRIC, '25.0ms')
+      )
+      expect(Traxor::Metric).to(
+        receive(:count).with(Traxor::Rails::ActionController::EXCEPTION_METRIC, 1)
+      )
 
       described_class.record(event)
     end

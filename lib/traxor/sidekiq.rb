@@ -17,7 +17,7 @@ module Traxor
         Metric.count EXCEPTION_METRIC, 1, tags
         raise
       ensure
-        Metric.count COUNT_METRIC.freeze, 1, tags
+        Metric.count COUNT_METRIC, 1, tags
       end
     end
   end

@@ -18,8 +18,12 @@ RSpec.describe Traxor::Faraday do
     let(:tags) { { faraday_host: 'www.google.com', faraday_method: :GET } }
 
     it 'records the metrics' do
-      expect(Traxor::Metric).to receive(:count).with(Traxor::Faraday::COUNT_METRIC, 1, tags)
-      expect(Traxor::Metric).to receive(:measure).with(Traxor::Faraday::DURATION_METRIC, '50.0ms', tags)
+      expect(Traxor::Metric).to(
+        receive(:count).with(Traxor::Faraday::COUNT_METRIC, 1, tags)
+      )
+      expect(Traxor::Metric).to(
+        receive(:measure).with(Traxor::Faraday::DURATION_METRIC, '50.0ms', tags)
+      )
 
       described_class.record(event)
     end

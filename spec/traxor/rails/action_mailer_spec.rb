@@ -17,7 +17,9 @@ RSpec.describe Traxor::Rails::ActionMailer do
     let(:tags) { { action_mailer_class_name: 'MyMailer' } }
 
     it 'records the metrics' do
-      expect(Traxor::Metric).to receive(:count).with(Traxor::Rails::ActionMailer::COUNT_METRIC, 1, tags)
+      expect(Traxor::Metric).to(
+        receive(:count).with(Traxor::Rails::ActionMailer::COUNT_METRIC, 1, tags)
+      )
 
       described_class.record(event)
     end
