@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Traxor
   module Rack
     module Middleware
       module QueueTime
-        X_REQUEST_START = 'HTTP_X_REQUEST_START'.freeze
+        X_REQUEST_START = 'HTTP_X_REQUEST_START'
 
         # any timestamps before this are thrown out and the parser
         # will try again with a larger unit (2000/1/1 UTC)
@@ -13,7 +15,7 @@ module Traxor
         def self.parse(env)
           return unless env[X_REQUEST_START]
 
-          value = env[X_REQUEST_START].to_s.sub(/t=/, ''.freeze)
+          value = env[X_REQUEST_START].to_s.sub(/t=/, '')
           DIVISORS.each do |divisor|
             time = Time.at(value.to_f / divisor).utc
             return time if time > EARLIEST_ACCEPTABLE_TIME

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/module/attribute_accessors_per_thread'
 require 'traxor/rack/middleware/pre'
 require 'traxor/rack/middleware/post'

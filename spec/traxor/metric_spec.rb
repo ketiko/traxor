@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Traxor::Metric do
   describe '.count' do
     subject(:record_metric) { described_class.count('requests', '4') }

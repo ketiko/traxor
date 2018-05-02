@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'benchmark'
 
 module Traxor
   class Sidekiq
-    DURATION_METRIC = 'sidekiq.worker.duration'.freeze
-    COUNT_METRIC = 'sidekiq.worker.count'.freeze
-    EXCEPTION_METRIC = 'sidekiq.worker.exception.count'.freeze
+    DURATION_METRIC = 'sidekiq.worker.duration'
+    COUNT_METRIC = 'sidekiq.worker.count'
+    EXCEPTION_METRIC = 'sidekiq.worker.exception.count'
 
     def call(worker, _job, queue)
       tags = Traxor::Tags.sidekiq = { sidekiq_worker: worker.class.name, sidekiq_queue: queue }

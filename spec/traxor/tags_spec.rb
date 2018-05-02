@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Traxor::Tags do
   it { is_expected.to have_attributes(controller: nil, sidekiq: nil) }
 

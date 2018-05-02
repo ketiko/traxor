@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/string/inflections'
 
 module Traxor
@@ -17,11 +19,11 @@ module Traxor
     def self.tag_string(tags)
       Hash(tags).merge(Traxor::Tags.all).map do |tag_name, tag_value|
         "tag##{tag_name}=#{tag_value}"
-      end.join(' '.freeze)
+      end.join(' ')
     end
 
     def self.normalize_values(value)
-      value.to_s.gsub(/::/, '.'.freeze).underscore.strip
+      value.to_s.gsub(/::/, '.').underscore.strip
     end
 
     def self.log(string)

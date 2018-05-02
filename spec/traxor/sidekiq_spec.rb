@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'traxor/sidekiq'
 
 RSpec.describe Traxor::Sidekiq do

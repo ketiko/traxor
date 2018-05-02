@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 require 'traxor/faraday' if defined?(Faraday)
 require 'traxor/metric'

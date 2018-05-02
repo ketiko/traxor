@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 require 'active_support/notifications'
 
 module Traxor
   module Rails
     module ActionController
-      COUNT_METRIC = 'rails.action_controller.count'.freeze
-      TOTAL_METRIC = 'rails.action_controller.total.duration'.freeze
-      RUBY_METRIC = 'rails.action_controller.ruby.duration'.freeze
-      DB_METRIC = 'rails.action_controller.db.duration'.freeze
-      VIEW_METRIC = 'rails.action_controller.view.duration'.freeze
-      EXCEPTION_METRIC = 'rails.action_controller.exception.count'.freeze
+      COUNT_METRIC = 'rails.action_controller.count'
+      TOTAL_METRIC = 'rails.action_controller.total.duration'
+      RUBY_METRIC = 'rails.action_controller.ruby.duration'
+      DB_METRIC = 'rails.action_controller.db.duration'
+      VIEW_METRIC = 'rails.action_controller.view.duration'
+      EXCEPTION_METRIC = 'rails.action_controller.exception.count'
 
-      ActiveSupport::Notifications.subscribe 'start_processing.action_controller'.freeze do |*args|
+      ActiveSupport::Notifications.subscribe 'start_processing.action_controller' do |*args|
         event = ActiveSupport::Notifications::Event.new(*args)
         Traxor::Tags.controller = {
           controller_name: event.payload[:controller],
@@ -19,7 +21,7 @@ module Traxor
         }
       end
 
-      ActiveSupport::Notifications.subscribe 'process_action.action_controller'.freeze do |*args|
+      ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
         event = ActiveSupport::Notifications::Event.new(*args)
         exception = event.payload[:exception]
         duration = (event.duration || 0.0).to_f

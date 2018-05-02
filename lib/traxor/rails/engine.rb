@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'rails/engine'
 
 module Traxor
   module Rails
     class Engine < ::Rails::Engine
-      initializer 'traxor.setup'.freeze do |app|
+      initializer 'traxor.setup' do |app|
         if ::Rails.env.development? || ::Rails.env.test?
-          Traxor.initialize_logger(::Rails.root.join('log'.freeze, 'traxor.log'.freeze))
+          Traxor.initialize_logger(::Rails.root.join('log', 'traxor.log'))
         end
 
         require 'traxor/rack'

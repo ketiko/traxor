@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 require 'traxor/rack/middleware/queue_time'
 
 module Traxor
   module Rack
     module Middleware
       class Pre
-        MIDDLEWARE_METRIC = 'rack.request.middleware.duration'.freeze
-        DURATION_METRIC = 'rack.request.duration'.freeze
-        QUEUE_METRIC = 'rack.request.queue.duration'.freeze
-        REQUEST_COUNT_METRIC = 'rack.request.count'.freeze
-        GC_DURATION_METRIC = 'ruby.gc.duration'.freeze
-        GC_COUNT_METRIC = 'ruby.gc.count'.freeze
-        MAJOR_METRIC = 'ruby.gc.major.count'.freeze
-        MINOR_METRIC = 'ruby.gc.minor.count'.freeze
-        ALLOCATED_METRIC = 'ruby.gc.allocated_objects.count'.freeze
+        MIDDLEWARE_METRIC = 'rack.request.middleware.duration'
+        DURATION_METRIC = 'rack.request.duration'
+        QUEUE_METRIC = 'rack.request.queue.duration'
+        REQUEST_COUNT_METRIC = 'rack.request.count'
+        GC_DURATION_METRIC = 'ruby.gc.duration'
+        GC_COUNT_METRIC = 'ruby.gc.count'
+        MAJOR_METRIC = 'ruby.gc.major.count'
+        MINOR_METRIC = 'ruby.gc.minor.count'
+        ALLOCATED_METRIC = 'ruby.gc.allocated_objects.count'
 
         def initialize(app)
           @app = app

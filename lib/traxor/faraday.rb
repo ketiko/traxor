@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'active_support/notifications'
 
 module Traxor
   module Faraday
-    DURATION_METRIC = 'faraday.request.duration'.freeze
-    COUNT_METRIC = 'faraday.request.count'.freeze
+    DURATION_METRIC = 'faraday.request.duration'
+    COUNT_METRIC = 'faraday.request.count'
 
-    ActiveSupport::Notifications.subscribe('request.faraday'.freeze) do |*args|
+    ActiveSupport::Notifications.subscribe('request.faraday') do |*args|
       event = ActiveSupport::Notifications::Event.new(*args)
       url = event.payload[:url]
       duration = (event.duration || 0.0).to_f
