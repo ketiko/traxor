@@ -5,7 +5,7 @@ module Traxor
     thread_mattr_accessor :controller, :sidekiq
 
     def self.all
-      Hash(controller).merge(Hash(sidekiq))
+      Hash(controller).merge(Hash(sidekiq)).dup
     end
   end
 end
