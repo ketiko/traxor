@@ -1,7 +1,9 @@
 require 'logger'
-require 'rails'
+require 'traxor/faraday' if defined?(Faraday)
 require 'traxor/metric'
-require 'traxor/rails'
+require 'traxor/rack' if defined?(Rack)
+require 'traxor/rails' if defined?(Rails::Engine)
+require 'traxor/sidekiq' if defined?(Sidekiq)
 require 'traxor/tags'
 require 'traxor/version'
 

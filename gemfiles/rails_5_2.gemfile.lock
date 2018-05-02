@@ -1,5 +1,5 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     traxor (0.1.17)
       activesupport
@@ -227,7 +227,7 @@ DEPENDENCIES
   lois
   pry
   pry-byebug
-  rails
+  rails (~> 5.2)
   rake
   reek
   rspec
