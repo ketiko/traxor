@@ -15,7 +15,7 @@ module Traxor
       def self.record(event)
         sql = event.payload[:sql].to_s.strip.upcase
         name = event.payload[:name].to_s.strip
-        return if ['SCHEMA'].any?(name.upcase)
+        return if 'SCHEMA' == name.upcase
         tags = {}
         tags[:active_record_class_name] = name.split.first if name.length.positive?
 
