@@ -86,7 +86,7 @@ RSpec.describe Traxor::Rails::ActiveRecord do
     end
 
     context 'when invalid event' do
-      before { event.payload[:name] = 'schema' }
+      before { event.payload[:name] = 'sCheMa' }
 
       it 'does not record the metrics' do
         expect(Traxor::Metric).not_to(
