@@ -28,4 +28,12 @@ RSpec.describe Traxor::Faraday do
       described_class.record(event)
     end
   end
+
+  describe 'subscription' do
+    it 'calls record' do
+      expect(described_class).to receive(:record)
+
+      ActiveSupport::Notifications.instrument('request.faraday')
+    end
+  end
 end

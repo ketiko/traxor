@@ -24,4 +24,12 @@ RSpec.describe Traxor::Rails::ActionMailer do
       described_class.record(event)
     end
   end
+
+  describe 'subscriptions' do
+    it 'calls record' do
+      expect(described_class).to receive(:record)
+
+      ActiveSupport::Notifications.instrument('deliver.action_mailer')
+    end
+  end
 end

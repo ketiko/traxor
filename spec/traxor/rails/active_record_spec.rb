@@ -135,4 +135,18 @@ RSpec.describe Traxor::Rails::ActiveRecord do
       described_class.record_instantiations(event)
     end
   end
+
+  describe 'subscriptions' do
+    it 'calls record_instantiations' do
+      expect(described_class).to receive(:record_instantiations)
+
+      ActiveSupport::Notifications.instrument('instantiation.active_record')
+    end
+
+    it 'calls record' do
+      expect(described_class).to receive(:record)
+
+      ActiveSupport::Notifications.instrument('sql.active_record')
+    end
+  end
 end

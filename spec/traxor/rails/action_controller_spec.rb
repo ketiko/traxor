@@ -70,4 +70,18 @@ RSpec.describe Traxor::Rails::ActionController do
       described_class.record(event)
     end
   end
+
+  describe 'subscriptions' do
+    it 'calls set_controller_tags' do
+      expect(described_class).to receive(:set_controller_tags)
+
+      ActiveSupport::Notifications.instrument('start_processing.action_controller')
+    end
+
+    it 'calls record' do
+      expect(described_class).to receive(:record)
+
+      ActiveSupport::Notifications.instrument('process_action.action_controller')
+    end
+  end
 end
