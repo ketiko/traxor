@@ -17,7 +17,7 @@ How does this help me?
 It logs things that help you troubleshoot performance issues.  Just some of the things it can help with:
 
  - How much time is spent in rack middleware?
- - Are requests getting backed up in the [queue](https://docs.newrelic.com/docs/apm/applications-menu/features/configuring-request-queue-reporting)?
+ - Are requests getting backed up in the [queue](https://devcenter.heroku.com/articles/http-routing#heroku-headers)
  - How many ActiveRecord models are loaded in a request?
  - Which sidekiq jobs are the slowest?
  - How much time is being spent in calls to external services?
@@ -114,13 +114,13 @@ Rack request:
 ```
 measure#rack.request.middleware.duration <- time spent in middleware outside of your rack application
 measure.rack.request.duration <- total duration of the request
-measure.rack.request.queue.duration <- duration of time spent from when your proxy received the request before your application started to process it
+measure.rack.request.queue.duration <- duration of time spent from when your router received the request before your application started to process it
 count.rack.request.count <- increment rack request count
 ```
 
 Note that the request queue time will read the `X-Request-Start` header in the request and calculate the number.
-This is optional and does not have to be set. See [request-queue-server-configuration-examples](https://docs.newrelic.com/docs/apm/applications-menu/features/request-queue-server-configuration-examples)
-for examples of how to configure this in your proxy.
+This is optional and does not have to be set. See [request queue server configuration examples](https://docs.newrelic.com/docs/apm/applications-menu/features/request-queue-server-configuration-examples)
+for examples of how to configure this in your router.
 
 GC During a Rack request:
 
