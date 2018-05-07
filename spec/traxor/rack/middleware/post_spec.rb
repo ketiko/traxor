@@ -8,11 +8,15 @@ RSpec.describe Traxor::Rack::Middleware::Post do
   let(:env) { instance_double('env') }
 
   it 'records the time before the request' do
-    expect { middleware.call(env) }.to(change { Traxor::Rack::Middleware.pre_finish_at })
+    Thread.new do
+      expect { middleware.call(env) }.to(change { Traxor::Rack::Middleware.pre_finish_at })
+    end.join
   end
 
   it 'records the time before the request' do
-    expect { middleware.call(env) }.to(change { Traxor::Rack::Middleware.post_start_at })
+    Thread.new do
+      expect { middleware.call(env) }.to(change { Traxor::Rack::Middleware.post_start_at })
+    end.join
   end
 
   it 'records them in the correct order' do
