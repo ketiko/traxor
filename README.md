@@ -70,7 +70,7 @@ module Animals
   module FlyingBird; end
 end
 
-Traxor.count(Animals::FlyingBird, 1)
+Traxor::Metric.count(Animals::FlyingBird, 1)
 
 Ouputs:
 
@@ -83,7 +83,7 @@ All measure metrics are recorded in milliseconds.  All count metrics are whole n
 
 #### Rails
 
-Traxor records a number of metrics using [Rail Instrumentation](http://guides.rubyonrails.org/active_support_instrumentation.html).
+Traxor records a number of metrics using [Rails instrumentation](http://guides.rubyonrails.org/active_support_instrumentation.html).
 It will also insert a rack middleware at the start of the request and another at the end right before your application code is run.
 This allows us to calculate how much time was spent in the rack middleware outside of your ActionController action.
 
@@ -113,9 +113,9 @@ Rack request:
 
 ```
 measure#rack.request.middleware.duration <- time spent in middleware outside of your rack application
-measure.rack.request.duration <- total duration of the request
-measure.rack.request.queue.duration <- duration of time spent from when your router received the request before your application started to process it
-count.rack.request.count <- increment rack request count
+measure#rack.request.duration <- total duration of the request
+measure#rack.request.queue.duration <- duration of time spent from when your router received the request before your application started to process it
+measure#count.rack.request.count <- increment rack request count
 ```
 
 Note that the request queue time will read the `X-Request-Start` header in the request and calculate the number.
@@ -129,7 +129,7 @@ measure#ruby.gc.duration <- total time spent in garage collection in a rack requ
 count#ruby.gc.count <- total number of gc runs during a rack request
 count#ruby.gc.major.count <- total major gc runs during a rack request
 count#ruby.gc.minor.count <- total minor gc runs during a rack request
-count# ruby.gc.allocated_objects.count <- total number of new objects loaded into memory during a rack request
+count#ruby.gc.allocated_objects.count <- total number of new objects loaded into memory during a rack request
 ```
 
 Note that the GC metrics are recorded by taking a sample before and after the request then calculating the delata.
@@ -141,12 +141,12 @@ We also enable the `GC::Profiler` which does have a performance cost.  In the fu
 ActiveRecord:
 
 ```
-count#rails.action_record.statements.count tag#active_record_class_name=user <- total number of sql statements run tagged by active_record_class_name
-count#rails.action_record.statements.select.count tag#active_record_class_name=user <- total number of select statements run tagged by active_record_class_name
-count#rails.action_record.statements.insert.count tag#active_record_class_name=user <- total number of insert statements run tagged by active_record_class_name
-count#rails.action_record.statements.update.count tag#active_record_class_name=user <- total number of update statements run tagged by active_record_class_name
-count#rails.action_record.statements.delete.count tag#active_record_class_name=user <- total number of delete statements run tagged by active_record_class_name
-count#rails.action_record.instantiation.count tag#active_record_class_name=user <- total number of ActiveRecord objects loaded from the db tagged by active_record_class_name
+count#rails.active_record.statements.count tag#active_record_class_name=user <- total number of sql statements run tagged by active_record_class_name
+count#rails.active_record.statements.select.count tag#active_record_class_name=user <- total number of select statements run tagged by active_record_class_name
+count#rails.active_record.statements.insert.count tag#active_record_class_name=user <- total number of insert statements run tagged by active_record_class_name
+count#rails.active_record.statements.update.count tag#active_record_class_name=user <- total number of update statements run tagged by active_record_class_name
+count#rails.active_record.statements.delete.count tag#active_record_class_name=user <- total number of delete statements run tagged by active_record_class_name
+count#rails.active_record.instantiation.count tag#active_record_class_name=user <- total number of ActiveRecord objects loaded from the db tagged by active_record_class_name
 ```
 
 Note that these metrics will automatically be tagged with ActionController or Sidekiq tags if run during a request or worker.
@@ -173,6 +173,8 @@ measure#sidekiq.worker.duration tag#sidekiq_worker=my_worker tag#sidekiq_queue=d
 count#sidekiq.worker.cout tag#sidekiq_worker=my_worker tag#sidekiq_queue=default <- increment worker count tagged by sidekiq_worker and sidekiq_queue
 count#sidekiq.worker.exception.count tag#sidekiq_worker=my_worker tag#sidekiq_queue=default <- increment exception count tagged by sidekiq_worker and sidekiq_queue
 ```
+
+Just like the controller tags, the Sidekiq tags will apply to any other metric recorded during a worker.
 
 ## Development
 
