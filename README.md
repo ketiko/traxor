@@ -16,13 +16,13 @@ How does this help me?
 
 It logs things that help you troubleshoot performance issues.  Just some of the things it can help with:
 
-How much time is spent in rack middleware?
-Are requests getting backed up in the [queue](https://docs.newrelic.com/docs/apm/applications-menu/features/configuring-request-queue-reporting)?
-How many ActiveRecord models are loaded in a request?
-Which sidekiq jobs are the slowest?
-How much time is being spent in calls to external services?
-How much time is being spent in garbage collection?
-How many objects are being loaded into memory on a request?
+ - How much time is spent in rack middleware?
+ - Are requests getting backed up in the [queue](https://docs.newrelic.com/docs/apm/applications-menu/features/configuring-request-queue-reporting)?
+ - How many ActiveRecord models are loaded in a request?
+ - Which sidekiq jobs are the slowest?
+ - How much time is being spent in calls to external services?
+ - How much time is being spent in garbage collection?
+ - How many objects are being loaded into memory on a request?
 
 ## Installation
 
