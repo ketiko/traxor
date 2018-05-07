@@ -2,7 +2,7 @@
 
 A tool for logging ruby application performance metrics to the [Akkeris](https://github.com/akkeris) platform.
 
-Supported Gems:
+Supported Frameworks:
 
  - Rack
  - Sidekiq
@@ -17,7 +17,7 @@ How does this help me?
 It logs things that help you troubleshoot performance issues.  Just some of the things it can help with:
 
  - How much time is spent in rack middleware?
- - Are requests getting backed up in the [queue](https://devcenter.heroku.com/articles/http-routing#heroku-headers)
+ - Are requests getting backed up in the [queue](https://devcenter.heroku.com/articles/http-routing#heroku-headers)?
  - How many ActiveRecord models are loaded in a request?
  - Which sidekiq jobs are the slowest?
  - How much time is being spent in calls to external services?
