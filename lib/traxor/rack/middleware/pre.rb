@@ -50,7 +50,8 @@ module Traxor
         end
 
         def record_gc_metrics
-          Metric.measure GC_DURATION_METRIC, "#{(GC::Profiler.total_time * 1_000).to_f.round(2)}ms"
+          total_gc_time = (GC::Profiler.total_time * 1_000).to_f
+          Metric.measure GC_DURATION_METRIC, "#{total_gc_time.round(2)}ms" if total_gc_time.positive?
           Metric.count GC_COUNT_METRIC, Middleware.gc_count
           Metric.count MAJOR_METRIC, Middleware.gc_major_count
           Metric.count MINOR_METRIC, Middleware.gc_minor_count
