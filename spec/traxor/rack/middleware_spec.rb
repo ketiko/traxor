@@ -86,6 +86,32 @@ RSpec.describe Traxor::Rack::Middleware do
     end
   end
 
+  describe '.request_total' do
+    subject { described_class.request_total }
+
+    context 'when pre_start_at is missing' do
+      it 'returns 0' do
+        Thread.new do
+          described_class.pre_start_at = nil
+          is_expected.to eq(0)
+        end.join
+      end
+    end
+
+    context 'when pre_start_at is present' do
+      it 'returns the delta in ms' do
+        Thread.new do
+          current = Time.now.utc
+          described_class.pre_start_at = current - 10.minutes
+          described_class.post_finish_at = current - 5.minutes
+
+          is_expected.to eq(5.minutes.to_f * 1_000)
+          is_expected.to be_a Float
+        end.join
+      end
+    end
+  end
+
   describe '.request_queue_total' do
     subject { described_class.request_queue_total }
 
