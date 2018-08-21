@@ -38,12 +38,14 @@ module Traxor
   end
 end
 
-ActiveSupport::Notifications.subscribe 'start_processing.action_controller' do |*args|
-  event = ActiveSupport::Notifications::Event.new(*args)
-  Traxor::Rails::ActionController.set_controller_tags(event)
-end
+if Traxor.enabled? && Traxor.scopes.include?(:action_controller)
+  ActiveSupport::Notifications.subscribe 'start_processing.action_controller' do |*args|
+    event = ActiveSupport::Notifications::Event.new(*args)
+    Traxor::Rails::ActionController.set_controller_tags(event)
+  end
 
-ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
-  event = ActiveSupport::Notifications::Event.new(*args)
-  Traxor::Rails::ActionController.record(event)
+  ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
+    event = ActiveSupport::Notifications::Event.new(*args)
+    Traxor::Rails::ActionController.record(event)
+  end
 end

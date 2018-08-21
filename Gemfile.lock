@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    traxor (0.1.18)
+    traxor (0.1.19)
       activesupport (>= 5.0)
 
 GEM
@@ -248,4 +248,4 @@ DEPENDENCIES
   traxor!
 
 BUNDLED WITH
-   1.16.1
+   1.16.4

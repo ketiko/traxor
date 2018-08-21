@@ -27,6 +27,8 @@ module Traxor
     end
 
     def self.log(string)
+      return unless Traxor.enabled?
+
       logger.info(normalize_values(string))
     end
 

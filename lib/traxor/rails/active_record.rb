@@ -36,12 +36,14 @@ module Traxor
   end
 end
 
-ActiveSupport::Notifications.subscribe 'sql.active_record' do |*args|
-  event = ActiveSupport::Notifications::Event.new(*args)
-  Traxor::Rails::ActiveRecord.record(event)
-end
+if Traxor.enabled? && Traxor.scopes.include?(:active_record)
+  ActiveSupport::Notifications.subscribe 'sql.active_record' do |*args|
+    event = ActiveSupport::Notifications::Event.new(*args)
+    Traxor::Rails::ActiveRecord.record(event)
+  end
 
-ActiveSupport::Notifications.subscribe 'instantiation.active_record' do |*args|
-  event = ActiveSupport::Notifications::Event.new(*args)
-  Traxor::Rails::ActiveRecord.record_instantiations(event)
+  ActiveSupport::Notifications.subscribe 'instantiation.active_record' do |*args|
+    event = ActiveSupport::Notifications::Event.new(*args)
+    Traxor::Rails::ActiveRecord.record_instantiations(event)
+  end
 end
