@@ -10,28 +10,32 @@ module Traxor
           Traxor.initialize_logger(::Rails.root.join('log', 'traxor.log'))
         end
 
-        require 'traxor/rack'
-        app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
-        app.config.middleware.use Traxor::Rack::Middleware::Post
+        if Traxor.enabled?
+          require 'traxor/rack'
+          app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
+          app.config.middleware.use Traxor::Rack::Middleware::Post
 
-        ActiveSupport.on_load :action_controller do
-          require 'traxor/rails/action_controller'
-        end
-        ActiveSupport.on_load :active_record do
-          require 'traxor/rails/active_record'
-        end
-        ActiveSupport.on_load :action_mailer do
-          require 'traxor/rails/action_mailer'
+          ActiveSupport.on_load :action_controller do
+            require 'traxor/rails/action_controller'
+          end
+          ActiveSupport.on_load :active_record do
+            require 'traxor/rails/active_record'
+          end
+          ActiveSupport.on_load :action_mailer do
+            require 'traxor/rails/action_mailer'
+          end
         end
       end
 
       config.before_configuration do
-        require 'traxor/faraday' if defined?(Faraday)
+        if Traxor.enabled?
+          require 'traxor/faraday' if defined?(Faraday)
 
-        if defined?(Sidekiq)
-          require 'traxor/sidekiq'
-          ::Sidekiq.server_middleware do |chain|
-            chain.add Traxor::Sidekiq
+          if defined?(Sidekiq)
+            require 'traxor/sidekiq'
+            ::Sidekiq.server_middleware do |chain|
+              chain.add Traxor::Sidekiq
+            end
           end
         end
       end

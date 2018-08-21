@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 require 'logger'
-require 'traxor/faraday' if defined?(Faraday)
-require 'traxor/metric'
-require 'traxor/rack' if defined?(Rack)
-require 'traxor/rails' if defined?(Rails::Engine)
-require 'traxor/sidekiq' if defined?(Sidekiq)
-require 'traxor/tags'
-require 'traxor/version'
 
 module Traxor
   def self.logger
@@ -21,4 +14,16 @@ module Traxor
     end
     @logger
   end
+
+  def self.enabled?
+    @enabled ||= ENV['DISABLE_TRAXOR'].nil?
+  end
 end
+
+require 'traxor/faraday' if defined?(Faraday)
+require 'traxor/metric'
+require 'traxor/rack' if defined?(Rack)
+require 'traxor/rails' if defined?(Rails::Engine)
+require 'traxor/sidekiq' if defined?(Sidekiq)
+require 'traxor/tags'
+require 'traxor/version'
