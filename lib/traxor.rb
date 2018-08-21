@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'logger'
+require 'active_support/core_ext/object/blank'
 
 module Traxor
+  DEFAULT_SCOPES = 'rack,action_controller,action_mailer,active_record,faraday,sidekiq'
+
   def self.logger
     defined?(@logger) ? @logger : initialize_logger
   end
@@ -16,7 +19,16 @@ module Traxor
   end
 
   def self.enabled?
-    @enabled ||= ENV['DISABLE_TRAXOR'].nil?
+    @enabled ||= ENV.fetch('TRAXOR_ENABLED', true).present?
+  end
+
+  def self.scopes
+    @scopes ||= ENV
+                .fetch('TRAXOR_SCOPES', DEFAULT_SCOPES)
+                .to_s
+                .downcase
+                .split(',')
+                .map(&:to_sym)
   end
 end
 

@@ -15,7 +15,7 @@ module Traxor
   end
 end
 
-if Traxor.enabled?
+if Traxor.enabled? && Traxor.scopes.include?(:action_mailer)
   ActiveSupport::Notifications.subscribe 'deliver.action_mailer' do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
     Traxor::Rails::ActionMailer.record(event)

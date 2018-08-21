@@ -18,7 +18,7 @@ module Traxor
   end
 end
 
-if Traxor.enabled?
+if Traxor.enabled? && Traxor.scopes.include?(:faraday)
   ActiveSupport::Notifications.subscribe('request.faraday') do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
     Traxor::Faraday.record(event)

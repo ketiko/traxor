@@ -11,9 +11,11 @@ module Traxor
         end
 
         if Traxor.enabled?
-          require 'traxor/rack'
-          app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
-          app.config.middleware.use Traxor::Rack::Middleware::Post
+          if Traxor.scopes.include?(:rack)
+            require 'traxor/rack'
+            app.config.middleware.insert 0, Traxor::Rack::Middleware::Pre
+            app.config.middleware.use Traxor::Rack::Middleware::Post
+          end
 
           ActiveSupport.on_load :action_controller do
             require 'traxor/rails/action_controller'
@@ -31,7 +33,7 @@ module Traxor
         if Traxor.enabled?
           require 'traxor/faraday' if defined?(Faraday)
 
-          if defined?(Sidekiq)
+          if defined?(Sidekiq) && Traxor.scopes.include?(:sidekiq)
             require 'traxor/sidekiq'
             ::Sidekiq.server_middleware do |chain|
               chain.add Traxor::Sidekiq

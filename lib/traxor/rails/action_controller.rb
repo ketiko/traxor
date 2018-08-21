@@ -38,7 +38,7 @@ module Traxor
   end
 end
 
-if Traxor.enabled?
+if Traxor.enabled? && Traxor.scopes.include?(:action_controller)
   ActiveSupport::Notifications.subscribe 'start_processing.action_controller' do |*args|
     event = ActiveSupport::Notifications::Event.new(*args)
     Traxor::Rails::ActionController.set_controller_tags(event)
