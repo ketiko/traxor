@@ -5,7 +5,7 @@ module Traxor
     class ErrorHandler
       EXCEPTION_METRIC = 'sidekiq.worker.exception.count'
 
-      def call(ex, context)
+      def call(_ex, context)
         tags = Traxor::Tags.sidekiq = {
           sidekiq_worker: context[:job]['class'],
           sidekiq_queue: context[:job]['queue']
