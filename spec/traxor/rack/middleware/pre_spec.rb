@@ -4,7 +4,7 @@ require 'traxor/rack/middleware/pre'
 
 RSpec.describe Traxor::Rack::Middleware::Pre do
   class FakeApp
-    def call(env)
+    def call(_env)
       sleep 0.2
     end
   end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    traxor (0.1.19)
+    traxor (0.1.20)
       activesupport (>= 5.0)
 
 GEM

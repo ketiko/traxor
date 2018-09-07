@@ -36,7 +36,11 @@ module Traxor
           if defined?(Sidekiq) && Traxor.scopes.include?(:sidekiq)
             require 'traxor/sidekiq'
             ::Sidekiq.server_middleware do |chain|
-              chain.add Traxor::Sidekiq
+              chain.add Traxor::Sidekiq::Middleware
+            end
+
+            ::Sidekiq.configure_server do |config|
+              config.error_handlers << Traxor::Sidekiq::ErrorHandler.new
             end
           end
         end
