@@ -19,7 +19,7 @@ module Traxor
   end
 
   def self.enabled?
-    @enabled ||= ENV.fetch('TRAXOR_ENABLED', true).present?
+    ENV['DISABLE_TRAXOR'].blank?
   end
 
   def self.scopes
@@ -28,6 +28,8 @@ module Traxor
                 .to_s
                 .downcase
                 .split(',')
+                .map(&:strip)
+                .map(&:chomp)
                 .map(&:to_sym)
   end
 end

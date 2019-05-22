@@ -52,7 +52,11 @@ RSpec.describe Traxor::Rack::Middleware::Pre do
 
   it 'records the gc duration' do
     Thread.new do
-      expect(Traxor::Metric).to(
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:measure)
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:count)
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:sample)
+
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(
           Traxor::Rack::Middleware::Pre::GC_DURATION_METRIC,
           "#{(fake_gc_duration * 1_000).to_f.round(2)}ms"
@@ -65,16 +69,20 @@ RSpec.describe Traxor::Rack::Middleware::Pre do
 
   it 'records the request metrics' do
     Thread.new do
-      expect(Traxor::Metric).to(
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:measure)
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:count)
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:sample)
+
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rack::Middleware::Pre::MIDDLEWARE_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rack::Middleware::Pre::DURATION_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rack::Middleware::Pre::QUEUE_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rack::Middleware::Pre::REQUEST_COUNT_METRIC, any_args)
       )
 
@@ -87,19 +95,23 @@ RSpec.describe Traxor::Rack::Middleware::Pre do
 
   it 'records the gc metrics' do
     Thread.new do
-      expect(Traxor::Metric).to(
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:measure)
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:count)
+      allow_any_instance_of(Traxor::Metric::Line).to receive(:sample)
+
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rack::Middleware::Pre::GC_DURATION_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rack::Middleware::Pre::GC_COUNT_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rack::Middleware::Pre::MAJOR_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rack::Middleware::Pre::MINOR_METRIC, any_args)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rack::Middleware::Pre::ALLOCATED_METRIC, any_args)
       )
 
