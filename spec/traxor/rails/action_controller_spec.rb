@@ -3,7 +3,7 @@
 require 'traxor/rails/action_controller'
 
 RSpec.describe Traxor::Rails::ActionController do
-  describe '.set_controller_tags' do
+  describe '.add_controller_tags' do
     let(:event) do
       ActiveSupport::Notifications::Event.new(
         nil,
@@ -25,7 +25,7 @@ RSpec.describe Traxor::Rails::ActionController do
 
     it 'sets global controller tags' do
       Thread.new do
-        described_class.set_controller_tags(event)
+        described_class.add_controller_tags(event)
 
         expect(Traxor::Tags.controller).to eq(tags)
       end.join
@@ -48,22 +48,22 @@ RSpec.describe Traxor::Rails::ActionController do
     let(:tags) { { faraday_host: 'www.google.com', faraday_method: :GET } }
 
     it 'records the metrics' do
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rails::ActionController::COUNT_METRIC, 1)
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rails::ActionController::TOTAL_METRIC, '1000.0ms')
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rails::ActionController::RUBY_METRIC, '945.0ms')
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rails::ActionController::DB_METRIC, '30.0ms')
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:measure).with(Traxor::Rails::ActionController::VIEW_METRIC, '25.0ms')
       )
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rails::ActionController::EXCEPTION_METRIC, 1)
       )
 
@@ -72,8 +72,8 @@ RSpec.describe Traxor::Rails::ActionController do
   end
 
   describe 'subscriptions' do
-    it 'calls set_controller_tags' do
-      expect(described_class).to receive(:set_controller_tags)
+    it 'calls add_controller_tags' do
+      expect(described_class).to receive(:add_controller_tags)
 
       ActiveSupport::Notifications.instrument('start_processing.action_controller')
     end

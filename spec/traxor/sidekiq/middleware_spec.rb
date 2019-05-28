@@ -12,10 +12,10 @@ RSpec.describe Traxor::Sidekiq::Middleware do
 
     it 'records metrics' do
       Thread.new do
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:measure).with(Traxor::Sidekiq::Middleware::DURATION_METRIC, any_args, tags)
         )
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Sidekiq::Middleware::COUNT_METRIC, 1, tags)
         )
 

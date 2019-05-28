@@ -10,9 +10,11 @@ module Traxor
 
       def call(worker, _job, queue)
         tags = Traxor::Tags.sidekiq = { sidekiq_worker: worker.class.name, sidekiq_queue: queue }
-        Metric.count COUNT_METRIC, 1, tags
-        time = Benchmark.ms { yield }
-        Metric.measure DURATION_METRIC, "#{time.round(2)}ms", tags if time.positive?
+        Metric::Line.record do |l|
+          l.count COUNT_METRIC, 1, tags
+          time = Benchmark.ms { yield }
+          l.measure DURATION_METRIC, "#{time.round(2)}ms", tags if time.positive?
+        end
       end
     end
   end

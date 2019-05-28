@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    traxor (0.1.20)
+    traxor (0.2.0)
       activesupport (>= 5.0)
 
 GEM
@@ -252,6 +252,3 @@ DEPENDENCIES
   sidekiq
   simplecov
   traxor!
-
-BUNDLED WITH
-   1.17.3

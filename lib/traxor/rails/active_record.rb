@@ -16,14 +16,17 @@ module Traxor
         sql = event.payload[:sql].to_s.strip.upcase
         name = event.payload[:name].to_s.strip
         return if name.casecmp('SCHEMA').zero?
+
         tags = {}
         tags[:active_record_class_name] = name.split.first if name.length.positive?
 
-        Metric.count COUNT_METRIC, 1, tags
-        Metric.count SELECT_METRIC, 1, tags if sql.start_with?('SELECT')
-        Metric.count INSERT_METRIC, 1, tags if sql.start_with?('INSERT')
-        Metric.count UPDATE_METRIC, 1, tags if sql.start_with?('UPDATE')
-        Metric.count DELETE_METRIC, 1, tags if sql.start_with?('DELETE')
+        Metric::Line.record do |l|
+          l.count COUNT_METRIC, 1, tags
+          l.count SELECT_METRIC, 1, tags if sql.start_with?('SELECT')
+          l.count INSERT_METRIC, 1, tags if sql.start_with?('INSERT')
+          l.count UPDATE_METRIC, 1, tags if sql.start_with?('UPDATE')
+          l.count DELETE_METRIC, 1, tags if sql.start_with?('DELETE')
+        end
       end
 
       def self.record_instantiations(event)

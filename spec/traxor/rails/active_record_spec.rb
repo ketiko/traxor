@@ -18,7 +18,7 @@ RSpec.describe Traxor::Rails::ActiveRecord do
     let(:tags) { { active_record_class_name: 'MyModel' } }
 
     it 'records the metrics' do
-      expect(Traxor::Metric).to(
+      expect_any_instance_of(Traxor::Metric::Line).to(
         receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, 1, tags)
       )
 
@@ -29,10 +29,10 @@ RSpec.describe Traxor::Rails::ActiveRecord do
       before { event.payload[:sql] = 'select' }
 
       it 'records the metrics' do
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, 1, tags)
         )
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::SELECT_METRIC, 1, tags)
         )
 
@@ -44,10 +44,10 @@ RSpec.describe Traxor::Rails::ActiveRecord do
       before { event.payload[:sql] = 'insert' }
 
       it 'records the metrics' do
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, 1, tags)
         )
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::INSERT_METRIC, 1, tags)
         )
 
@@ -59,10 +59,10 @@ RSpec.describe Traxor::Rails::ActiveRecord do
       before { event.payload[:sql] = 'update' }
 
       it 'records the metrics' do
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, 1, tags)
         )
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::UPDATE_METRIC, 1, tags)
         )
 
@@ -74,10 +74,10 @@ RSpec.describe Traxor::Rails::ActiveRecord do
       before { event.payload[:sql] = 'delete' }
 
       it 'records the metrics' do
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, 1, tags)
         )
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::DELETE_METRIC, 1, tags)
         )
 
@@ -86,13 +86,13 @@ RSpec.describe Traxor::Rails::ActiveRecord do
     end
 
     context 'when invalid event' do
-      before { event.payload[:name] = 'sCheMa' }
+      before { event.payload[:name] = 'schema' }
 
       it 'does not record the metrics' do
-        expect(Traxor::Metric).not_to(
+        expect_any_instance_of(Traxor::Metric::Line).not_to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, any_args)
         )
-        expect(Traxor::Metric).not_to(
+        expect_any_instance_of(Traxor::Metric::Line).not_to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, any_args)
         )
 
@@ -104,7 +104,7 @@ RSpec.describe Traxor::Rails::ActiveRecord do
       before { event.payload[:name] = '' }
 
       it 'does not record the tags' do
-        expect(Traxor::Metric).to(
+        expect_any_instance_of(Traxor::Metric::Line).to(
           receive(:count).with(Traxor::Rails::ActiveRecord::COUNT_METRIC, 1, {})
         )
 
